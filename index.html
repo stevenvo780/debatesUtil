@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Debate Moderator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #f8f9fa;
+    }
+
+    #participantsTable th,
+    #participantsTable td {
+      vertical-align: middle;
+    }
+
+    .timer {
+      font-weight: bold;
+    }
+
+    .bg-gray {
+      background: #e9ecef;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-4">
+    <h2 class="mb-3">Debate Moderator</h2>
+    <div class="mb-3">
+      <label for="participantName" class="form-label">Participant Name</label>
+      <input type="text" class="form-control" id="participantName">
+    </div>
+    <div class="mb-3">
+      <label for="initialTime" class="form-label">Initial Time (minutes)</label>
+      <input type="number" class="form-control" id="initialTime" min="1" value="5">
+    </div>
+    <button class="btn btn-primary mb-3" onclick="addParticipant()">Add Participant</button>
+    <div class="row mb-3">
+      <div class="col">
+        <label for="roundCount" class="form-label">Current Round</label>
+        <input type="number" id="roundCount" class="form-control" min="1" value="1" onchange="updateRound()">
+      </div>
+      <div class="col">
+        <label class="form-label d-block">&nbsp;</label>
+        <button class="btn btn-secondary" onclick="newRound()">New Round</button>
+      </div>
+    </div>
+    <table class="table table-bordered" id="participantsTable">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Round Time</th>
+          <th>Total Time Used</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    let data = { round: 1, participants: [] }
+    function loadData() {
+      let stored = localStorage.getItem("debateData")
+      if (stored) { data = JSON.parse(stored) }
+    }
+    function saveData() {
+      localStorage.setItem("debateData", JSON.stringify(data))
+    }
+    function updateRoundDisplay() {
+      document.getElementById("roundCount").value = data.round
+    }
+    function updateRound() {
+      data.round = parseInt(document.getElementById("roundCount").value)
+      saveData()
+      renderTable()
+    }
+    function newRound() {
+      data.round++
+      saveData()
+      updateRoundDisplay()
+      renderTable()
+    }
+    function addParticipant() {
+      let name = document.getElementById("participantName").value.trim()
+      let initTime = parseInt(document.getElementById("initialTime").value)
+      if (!name || initTime < 1) return
+      data.participants.push({
+        id: Date.now(),
+        name: name,
+        initialTime: initTime,
+        totalUsed: 0,
+        roundTimes: {},
+        activeTimer: false,
+        timeLeft: initTime * 60
+      })
+      saveData()
+      document.getElementById("participantName").value = ""
+      renderTable()
+    }
+    function startTimer(id) {
+      let p = data.participants.find(x => x.id === id)
+      if (!p) return
+      data.participants.forEach(x => x.activeTimer = false)
+      p.activeTimer = true
+      saveData()
+      renderTable()
+    }
+    function pauseTimer(id) {
+      let p = data.participants.find(x => x.id === id)
+      if (!p) return
+      p.activeTimer = false
+      saveData()
+      renderTable()
+    }
+    function resetTime(id) {
+      let p = data.participants.find(x => x.id === id)
+      if (!p) return
+      p.timeLeft = p.initialTime * 60
+      saveData()
+      renderTable()
+    }
+    function tick() {
+      data.participants.forEach(p => {
+        if (p.activeTimer) {
+          if (p.timeLeft > 0) {
+            p.timeLeft--
+            p.totalUsed++
+          }
+          if (!p.roundTimes[data.round]) p.roundTimes[data.round] = 0
+          p.roundTimes[data.round]++
+        }
+      })
+      saveData()
+      renderTable()
+    }
+    function formatTime(sec) {
+      let m = Math.floor(sec / 60)
+      let s = sec % 60
+      return m + ":" + (s < 10 ? "0" + s : s)
+    }
+    function renderTable() {
+      let tbody = document.querySelector("#participantsTable tbody")
+      tbody.innerHTML = ""
+      data.participants.forEach(p => {
+        let tr = document.createElement("tr")
+        let roundTime = p.roundTimes[data.round] ? p.roundTimes[data.round] : 0
+        tr.innerHTML = `
+      <td>${p.name}</td>
+      <td><span class="timer">${formatTime(roundTime)}</span></td>
+      <td>${formatTime(p.totalUsed)}</td>
+      <td>${p.activeTimer ? "Running" : "Paused"}</td>
+      <td>
+        <button class="btn btn-success btn-sm" onclick="startTimer(${p.id})">Start</button>
+        <button class="btn btn-warning btn-sm" onclick="pauseTimer(${p.id})">Pause</button>
+        <button class="btn btn-info btn-sm" onclick="resetTime(${p.id})">Reset Round</button>
+      </td>
+    `
+        tbody.appendChild(tr)
+      })
+    }
+    loadData()
+    updateRoundDisplay()
+    renderTable()
+    setInterval(tick, 1000)
+  </script>
+</body>
+
+</html>
