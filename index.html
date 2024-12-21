@@ -5,26 +5,14 @@
   <title>Debate Moderator</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
-    body {
-      background: #f8f9fa;
-    }
-    .card-deck {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .card {
-      min-width: 280px;
-      max-width: 350px;
-      cursor: pointer;
-    }
-    .timer {
-      font-weight: bold;
-      font-size: 1.25rem;
-    }
-    .bg-gray {
-      background: #e9ecef;
-    }
+    body { background: #f8f9fa; }
+    .card-deck { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .card { min-width: 280px; max-width: 350px; cursor: pointer; }
+    .timer { font-weight: bold; font-size: 1.25rem; }
+    .bg-gray { background: #e9ecef; }
+    #activeParticipantContainer { text-align: center; margin-bottom: 1rem; }
+    #activeParticipantName { font-size: 1.5rem; }
+    #activeTimeLeftDisplay { font-size: 2.5rem; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -34,11 +22,11 @@
   <div class="row mb-3">
     <div class="col-md-4">
       <label class="form-label">Participant Name</label>
-      <input type="text" class="form-control" id="participantName" />
+      <input type="text" class="form-control" id="participantName"/>
     </div>
     <div class="col-md-4">
       <label class="form-label">Initial Time (minutes)</label>
-      <input type="number" class="form-control" id="initialTime" min="1" value="5" />
+      <input type="number" class="form-control" id="initialTime" min="1" value="5"/>
     </div>
     <div class="col-md-4 d-flex align-items-end">
       <button class="btn btn-primary w-100" onclick="addParticipant()">Add Participant</button>
@@ -48,15 +36,7 @@
   <div class="row mb-3">
     <div class="col-md-2 d-flex align-items-center">
       <label class="form-label me-2">Round</label>
-      <input
-        type="number"
-        id="roundCount"
-        class="form-control"
-        style="width: 80px;"
-        min="1"
-        value="1"
-        onchange="updateRound()"
-      />
+      <input type="number" id="roundCount" class="form-control" style="width: 80px;" min="1" value="1" onchange="updateRound()"/>
     </div>
     <div class="col-md-2 mb-2">
       <button class="btn btn-secondary w-100" onclick="newRound()">New Round</button>
@@ -76,16 +56,15 @@
     </div>
     <div class="col-md-4">
       <div class="input-group">
-        <input
-          type="number"
-          class="form-control"
-          id="globalTime"
-          placeholder="Set new time (minutes)"
-          min="1"
-        />
+        <input type="number" class="form-control" id="globalTime" placeholder="Set new time (minutes)" min="1" value="5"/>
         <button class="btn btn-warning" onclick="changeAllTime()">Change All</button>
       </div>
     </div>
+  </div>
+
+  <div id="activeParticipantContainer">
+    <div id="activeParticipantName"></div>
+    <div id="activeTimeLeftDisplay"></div>
   </div>
 
   <div class="card-deck" id="participantsDeck"></div>
@@ -106,6 +85,32 @@
   </div>
 </div>
 
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Participant</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editParticipantId"/>
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" id="editParticipantName" class="form-control"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Time (minutes)</label>
+          <input type="number" id="editParticipantTime" class="form-control" min="1"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="saveParticipantChanges()">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 let data = {
@@ -117,7 +122,7 @@ let data = {
 
 function canUseLocalStorage() {
   try {
-    localStorage.setItem("test", "test");
+    localStorage.setItem("test","test");
     localStorage.removeItem("test");
     return true;
   } catch {
@@ -185,6 +190,11 @@ function updateRound() {
 
 function newRound() {
   data.round++;
+  let newTimeValue = parseInt(document.getElementById("globalTime").value) || 5;
+  data.participants.forEach(p => {
+    p.initialTime = newTimeValue;
+    p.timeLeft = newTimeValue * 60;
+  });
   saveData();
   document.getElementById("roundCount").value = data.round;
   renderParticipants();
@@ -220,6 +230,32 @@ function addPenalty(id, ev) {
   renderParticipants();
 }
 
+function editParticipant(id, ev) {
+  ev.stopPropagation();
+  let p = data.participants.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById("editParticipantId").value = p.id;
+  document.getElementById("editParticipantName").value = p.name;
+  document.getElementById("editParticipantTime").value = p.initialTime;
+  let modal = new bootstrap.Modal(document.getElementById("editModal"));
+  modal.show();
+}
+
+function saveParticipantChanges() {
+  let id = parseInt(document.getElementById("editParticipantId").value);
+  let name = document.getElementById("editParticipantName").value.trim();
+  let timeMins = parseInt(document.getElementById("editParticipantTime").value);
+  let p = data.participants.find(x => x.id === id);
+  if (!p || !name || timeMins < 1) return;
+  p.name = name;
+  p.initialTime = timeMins;
+  p.timeLeft = timeMins * 60;
+  saveData();
+  renderParticipants();
+  let modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+  modal.hide();
+}
+
 function tick() {
   let active = data.participants.find(p => p.id === data.activeParticipantId);
   if (active) {
@@ -227,14 +263,13 @@ function tick() {
       active.timeLeft--;
       active.totalUsed++;
     }
-    if (!active.roundTimes[data.round]) {
-      active.roundTimes[data.round] = 0;
-    }
+    if (!active.roundTimes[data.round]) active.roundTimes[data.round] = 0;
     active.roundTimes[data.round]++;
   }
   saveData();
   renderParticipants();
   renderActiveClock();
+  renderActiveParticipantDisplay();
 }
 
 function renderActiveClock() {
@@ -245,6 +280,19 @@ function renderActiveClock() {
   }
   let secs = Math.floor((Date.now() - data.sessionStart) / 1000);
   clock.textContent = formatTime(secs);
+}
+
+function renderActiveParticipantDisplay() {
+  let containerName = document.getElementById("activeParticipantName");
+  let containerTime = document.getElementById("activeTimeLeftDisplay");
+  let active = data.participants.find(p => p.id === data.activeParticipantId);
+  if (!active) {
+    containerName.textContent = "No Active Participant";
+    containerTime.textContent = "00:00";
+    return;
+  }
+  containerName.textContent = active.name;
+  containerTime.textContent = formatTime(active.timeLeft);
 }
 
 function renderParticipants() {
@@ -259,7 +307,10 @@ function renderParticipants() {
     card.onclick = () => toggleTimer(p.id);
     card.innerHTML = `
       <div class="card-body">
-        <h5 class="card-title">${p.name}</h5>
+        <h5 class="card-title d-flex justify-content-between align-items-center">
+          <span>${p.name}</span>
+          <span style="cursor:pointer" onclick="editParticipant(${p.id}, event)">✏️</span>
+        </h5>
         <p class="card-text">
           <strong>Round Time:</strong>
           <span class="timer">${formatTime(roundTime)}</span>
@@ -278,19 +329,10 @@ function renderParticipants() {
         <p class="card-text">
           <strong>Penalties:</strong>
           <span class="text-danger">${p.penalties}</span>
-          <button 
-            class="btn btn-sm btn-danger ms-2"
-            onclick="addPenalty(${p.id}, event)"
-          >
-            +
-          </button>
+          <button class="btn btn-sm btn-danger ms-2" onclick="addPenalty(${p.id}, event)">+</button>
         </p>
-        <button class="btn btn-info btn-sm me-1" onclick="resetTime(${p.id}, event)">
-          Reset
-        </button>
-        <button class="btn btn-danger btn-sm" onclick="removeParticipant(${p.id}, event); event.stopPropagation();">
-          Remove
-        </button>
+        <button class="btn btn-info btn-sm me-1" onclick="resetTime(${p.id}, event)">Reset</button>
+        <button class="btn btn-danger btn-sm" onclick="removeParticipant(${p.id}, event); event.stopPropagation();">Remove</button>
       </div>
     `;
     deck.appendChild(card);
