@@ -67,9 +67,24 @@
     <div class="col-md-2 mb-2">
       <button class="btn btn-info w-100" onclick="showStats()">Show Stats</button>
     </div>
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-4 d-flex align-items-center">
       <h5 class="mb-0 me-2">Active Timer:</h5>
       <div id="activeTimerClock" class="fs-5">00:00</div>
+    </div>
+    <div class="col-md-4">
+      <div class="input-group">
+        <input
+          type="number"
+          class="form-control"
+          id="globalTime"
+          placeholder="Set new time (minutes)"
+          min="1"
+        />
+        <button class="btn btn-warning" onclick="changeAllTime()">Change All</button>
+      </div>
     </div>
   </div>
 
@@ -105,7 +120,7 @@ function canUseLocalStorage() {
     localStorage.setItem("test", "test");
     localStorage.removeItem("test");
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -138,10 +153,9 @@ function addParticipant() {
   let name = document.getElementById("participantName").value.trim();
   let initTime = parseInt(document.getElementById("initialTime").value);
   if (!name || initTime < 1) return;
-
   data.participants.push({
     id: Date.now(),
-    name: name,
+    name,
     initialTime: initTime,
     totalUsed: 0,
     roundTimes: {},
@@ -225,11 +239,7 @@ function tick() {
 
 function renderActiveClock() {
   let clock = document.getElementById("activeTimerClock");
-  if (!data.activeParticipantId) {
-    clock.textContent = "00:00";
-    return;
-  }
-  if (!data.sessionStart) {
+  if (!data.activeParticipantId || !data.sessionStart) {
     clock.textContent = "00:00";
     return;
   }
@@ -242,13 +252,11 @@ function renderParticipants() {
   deck.innerHTML = "";
   data.participants.forEach(p => {
     let roundTime = p.roundTimes[data.round] ? p.roundTimes[data.round] : 0;
-    let isActive = (data.activeParticipantId === p.id);
+    let isActive = data.activeParticipantId === p.id;
     let statusClass = isActive ? "bg-success" : "bg-secondary";
-
     let card = document.createElement("div");
     card.className = "card";
     card.onclick = () => toggleTimer(p.id);
-
     card.innerHTML = `
       <div class="card-body">
         <h5 class="card-title">${p.name}</h5>
@@ -280,13 +288,24 @@ function renderParticipants() {
         <button class="btn btn-info btn-sm me-1" onclick="resetTime(${p.id}, event)">
           Reset
         </button>
-        <button class="btn btn-danger btn-sm" onclick="removeParticipant(${p.id}); event.stopPropagation();">
+        <button class="btn btn-danger btn-sm" onclick="removeParticipant(${p.id}, event); event.stopPropagation();">
           Remove
         </button>
       </div>
     `;
     deck.appendChild(card);
   });
+}
+
+function changeAllTime() {
+  let newTime = parseInt(document.getElementById("globalTime").value);
+  if (!newTime || newTime < 1) return;
+  data.participants.forEach(p => {
+    p.initialTime = newTime;
+    p.timeLeft = newTime * 60;
+  });
+  saveData();
+  renderParticipants();
 }
 
 function showStats() {
