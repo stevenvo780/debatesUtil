@@ -23,6 +23,7 @@ import {
   setLanguage
 } from "./store/debateSlice"
 import "./App.css"
+import { useTimerLogic } from './hooks/useTimerLogic'  // Nuevo hook
 
 export default function App() {
   const dispatch = useDispatch()
@@ -206,24 +207,19 @@ export default function App() {
   function showStats() {
     let content = ""
     data.participants.forEach((p) => {
+      const participantInterventions = data.speakOrder.filter(s => s.participantId === p.id)
       content +=
-        "<p><strong>" +
-        p.name +
-        "</strong> - Total Used: " +
-        formatTime(p.totalUsed) +
-        ", Penalties: " +
-        p.penalties +
-        "</p>"
+        `<p><strong>${p.name}</strong><br/>` +
+        `Total Used: ${formatTime(p.totalUsed)}<br/>` +
+        `Interventions: ${participantInterventions.length}<br/>` +
+        `Penalties: ${p.penalties}</p>`
     })
     setStatsContent(content)
     setShowStatsModal(true)
   }
 
+  const { activeTimeLeft, activeTimer } = useTimerLogic(data)
   const activeParticipant = data.participants.find((p) => p.id === data.activeParticipantId)
-  const activeTimeLeft = activeParticipant ? formatTime(activeParticipant.timeLeft) : "00:00"
-  const activeTimer = data.activeParticipantId && data.sessionStart
-    ? formatTime(Math.floor((Date.now() - data.sessionStart) / 1000))
-    : "00:00"
 
   return (
     <>

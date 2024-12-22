@@ -11,7 +11,9 @@ const initialState = {
   globalSessionPausedAt: null,
   globalTimeInput: 5,
   initialTime: 5,
-  language: 'es' // default language
+  language: 'es', // default language
+  speakOrder: [], // Array para guardar orden de intervenciones
+  lastInteractionTime: Date.now(), // Para validación de tiempos
 }
 
 export const debateSlice = createSlice({
@@ -47,7 +49,13 @@ export const debateSlice = createSlice({
       } else {
         state.activeParticipantId = action.payload
         state.sessionStart = Date.now()
+        state.speakOrder.push({
+          participantId: action.payload,
+          timestamp: Date.now(),
+          round: state.round
+        })
       }
+      state.lastInteractionTime = Date.now()
     },
     updateParticipant: (state, action) => {
       const index = state.participants.findIndex(p => p.id === action.payload.id)
