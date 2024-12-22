@@ -35,7 +35,13 @@ export const translations = {
     resetGame: "Reset Game",
     resetAll: "Reset All",
     resetGameDescription: "Reset only game data (rounds, times, penalties)",
-    resetAllDescription: "Reset everything (including participants and title)"
+    resetAllDescription: "Reset everything (including participants and title)",
+    deleteConfirmTitle: "Delete Participant",
+    deleteConfirmMessage: "Are you sure you want to delete this participant?",
+    resetTimeConfirmTitle: "Reset Time",
+    resetTimeConfirmMessage: "Are you sure you want to reset this participant's time?",
+    cancel: "Cancel",
+    confirm: "Confirm"
   },
   es: {
     title: "Moderador de Debate",
@@ -73,6 +79,12 @@ export const translations = {
     resetGame: "Reiniciar Partida",
     resetAll: "Reiniciar Todo",
     resetGameDescription: "Reiniciar solo datos de juego (rondas, tiempos, penalizaciones)",
-    resetAllDescription: "Reiniciar todo (incluyendo participantes y título)"
+    resetAllDescription: "Reiniciar todo (incluyendo participantes y título)",
+    deleteConfirmTitle: "Eliminar Participante",
+    deleteConfirmMessage: "¿Estás seguro que deseas eliminar este participante?",
+    resetTimeConfirmTitle: "Reiniciar Tiempo",
+    resetTimeConfirmMessage: "¿Estás seguro que deseas reiniciar el tiempo de este participante?",
+    cancel: "Cancelar",
+    confirm: "Confirmar"
   }
 }

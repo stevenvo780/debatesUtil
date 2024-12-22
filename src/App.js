@@ -25,6 +25,7 @@ import {
 } from "./store/debateSlice"
 import "./App.css"
 import { useTimerLogic } from './hooks/useTimerLogic'  // Nuevo hook
+import ConfirmationModals from './components/ConfirmationModals'
 
 export default function App() {
   const dispatch = useDispatch()
@@ -38,6 +39,9 @@ export default function App() {
   const [statsContent, setStatsContent] = useState("")
   const [editParticipantPenalties, setEditParticipantPenalties] = useState(0)
   const [showResetModal, setShowResetModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showResetTimeModal, setShowResetTimeModal] = useState(false)
+  const [selectedParticipantId, setSelectedParticipantId] = useState(null)
 
   const t = (key) => translations[data.language][key]
   
@@ -246,6 +250,35 @@ export default function App() {
     setShowResetModal(false)
   }
 
+  function handleDeleteConfirmation(id, e) {
+    e.stopPropagation()
+    setSelectedParticipantId(id)
+    setShowDeleteModal(true)
+  }
+
+  function handleResetTimeConfirmation(id, e) {
+    e.stopPropagation()
+    setSelectedParticipantId(id)
+    setShowResetTimeModal(true)
+  }
+
+  function confirmDelete() {
+    dispatch(removeParticipant(selectedParticipantId))
+    setShowDeleteModal(false)
+    setSelectedParticipantId(null)
+  }
+
+  function confirmResetTime() {
+    const p = data.participants.find(x => x.id === selectedParticipantId)
+    if (!p) return
+    dispatch(updateParticipant({
+      ...p,
+      timeLeft: p.initialTime * 60
+    }))
+    setShowResetTimeModal(false)
+    setSelectedParticipantId(null)
+  }
+
   const { activeTimeLeft, activeTimer } = useTimerLogic(data)
   const activeParticipant = data.participants.find((p) => p.id === data.activeParticipantId)
 
@@ -289,8 +322,8 @@ export default function App() {
           toggleTimer={handleToggleTimer}
           editParticipant={handleEditParticipant}
           addPenalty={handleAddPenalty}
-          resetTime={handleResetTime}
-          removeParticipant={handleRemoveParticipant}
+          resetTime={handleResetTimeConfirmation}
+          removeParticipant={handleDeleteConfirmation}
           formatTime={formatTime}
         />
         <ParticipantForm
@@ -321,24 +354,19 @@ export default function App() {
         currentPenalties={editParticipantPenalties}
         onPenaltyChange={handlePenaltyChange}
       />
-      <Modal show={showResetModal} onHide={() => setShowResetModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('resetConfirmTitle')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{t('resetConfirmMessage')}</p>
-          <div className="d-grid gap-2">
-            <Button variant="warning" onClick={handleResetGame}>
-              {t('resetGame')}
-              <small className="d-block">{t('resetGameDescription')}</small>
-            </Button>
-            <Button variant="danger" onClick={handleResetAll}>
-              {t('resetAll')}
-              <small className="d-block">{t('resetAllDescription')}</small>
-            </Button>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <ConfirmationModals
+        t={t}
+        showDeleteModal={showDeleteModal}
+        showResetTimeModal={showResetTimeModal}
+        showResetModal={showResetModal}
+        onCloseDelete={() => setShowDeleteModal(false)}
+        onCloseResetTime={() => setShowResetTimeModal(false)}
+        onCloseReset={() => setShowResetModal(false)}
+        onConfirmDelete={confirmDelete}
+        onConfirmResetTime={confirmResetTime}
+        onResetGame={handleResetGame}
+        onResetAll={handleResetAll}
+      />
     </>
   )
 }
