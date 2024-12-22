@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Container } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
-import ActiveTimerSection from "./components/ActiveTimerSection"
 import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
 import ParticipantForm from "./components/ParticipantForm"
@@ -286,13 +285,10 @@ export default function App() {
           getGlobalSessionClock={getGlobalSessionClock}
           toggleGlobalSession={toggleGlobalSession}
           onTitleChange={(val) => handleDataChange({ ...data, globalSessionTitle: val })}
-        />
-        <ActiveTimerSection
           activeTimer={activeTimer}
           globalTimeInput={globalTimeInput}
           setGlobalTimeInput={setGlobalTimeInput}
           changeAllTime={changeAllTime}
-          getGlobalSessionClock={getGlobalSessionClock}
           activeParticipant={activeParticipant}
           activeTimeLeft={activeTimeLeft}
         />
