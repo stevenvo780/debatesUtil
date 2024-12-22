@@ -1,10 +1,10 @@
 import React from "react"
 import { Row, Col, Card, Button } from "react-bootstrap"
 import { 
-  BsTrash, 
-  BsPencil, 
+  BsFillTrashFill, 
+  BsFillPencilFill, 
   BsArrowCounterclockwise, 
-  BsExclamationTriangle 
+  BsFillExclamationTriangleFill 
 } from 'react-icons/bs'
 
 export default function ParticipantsSection({
@@ -56,7 +56,7 @@ export default function ParticipantsSection({
                         className="icon-button"
                         onClick={(e) => editParticipant(p.id, e)}
                         aria-label="Editar participante">
-                        <BsPencil style={{color: '#6c757d', width: '2rem', height: '2rem'}} />
+                        <BsFillPencilFill style={{color: '#6c757d', width: '2rem', height: '2rem'}} />
                       </Button>
                     </div>
                   </div>
@@ -81,7 +81,7 @@ export default function ParticipantsSection({
                     <div className="penalties-group d-flex align-items-center gap-1">
                       <span className={dangerClass ? "text-white" : "text-danger"}>
                         {p.penalties > 0 && (
-                          <><BsExclamationTriangle style={{width: '1.4rem', color: '#dc3545'}} /> {p.penalties}</>
+                          <><BsFillExclamationTriangleFill style={{width: '1.4rem', color: '#dc3545'}} /> {p.penalties}</>
                         )}
                       </span>
                       <Button
@@ -89,7 +89,7 @@ export default function ParticipantsSection({
                         className="icon-button"
                         onClick={(e) => addPenalty(p.id, e)}
                         title={t('penalties')}>
-                        <BsExclamationTriangle style={{color: '#dc3545', width: '1.4rem', height: '1.4rem'}} />
+                        <BsFillExclamationTriangleFill style={{color: '#dc3545', width: '1.4rem', height: '1.4rem'}} />
                       </Button>
                     </div>
                     
@@ -106,7 +106,7 @@ export default function ParticipantsSection({
                         className="icon-button"
                         onClick={(e) => removeParticipant(p.id, e)}
                         title={t('remove')}>
-                        <BsTrash style={{color: '#dc3545', width: '1.4rem', height: '1.4rem'}} />
+                        <BsFillTrashFill style={{color: '#dc3545', width: '1.4rem', height: '1.4rem'}} />
                       </Button>
                     </div>
                   </div>
