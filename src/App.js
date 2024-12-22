@@ -34,9 +34,38 @@ export default function App() {
   const [statsContent, setStatsContent] = useState("")
 
   useEffect(() => {
-    const interval = setInterval(() => tick(), 1000)
+    const interval = setInterval(() => {
+      if (!data.globalSessionPaused) {
+        const now = Date.now()
+        if (now !== data.globalSessionStart) {
+          dispatch(setGlobalSession({
+            paused: false,
+            pausedAt: null,
+            start: data.globalSessionStart
+          }))
+        }
+      }
+    }, 1000)
     return () => clearInterval(interval)
-  })
+  }, [data.globalSessionPaused, data.globalSessionStart])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const active = data.participants.find(p => p.id === data.activeParticipantId)
+      if (active && active.timeLeft > 0) {
+        dispatch(updateParticipant({
+          ...active,
+          timeLeft: active.timeLeft - 1,
+          totalUsed: active.totalUsed + 1,
+          roundTimes: {
+            ...active.roundTimes,
+            [data.round]: (active.roundTimes[data.round] || 0) + 1
+          }
+        }))
+      }
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [data.activeParticipantId, data.participants, data.round])
 
   function handleAddParticipant() {
     if (!participantName.trim() || data.initialTime < 1) return
@@ -107,21 +136,6 @@ export default function App() {
       timeLeft: parseFloat(editParticipantTime) * 60
     }))
     setShowEditModal(false)
-  }
-
-  function tick() {
-    const active = data.participants.find(p => p.id === data.activeParticipantId)
-    if (active && active.timeLeft > 0) {
-      dispatch(updateParticipant({
-        ...active,
-        timeLeft: active.timeLeft - 1,
-        totalUsed: active.totalUsed + 1,
-        roundTimes: {
-          ...active.roundTimes,
-          [data.round]: (active.roundTimes[data.round] || 0) + 1
-        }
-      }))
-    }
   }
 
   function handleToggleGlobalSession() {
