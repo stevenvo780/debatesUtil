@@ -11,7 +11,7 @@ export default function GlobalSessionCard({
   activeTimeLeft
 }) {
   return (
-    <div className="section-box mb-3">
+    <div className="section-box ">
       <Form.Control
         placeholder="Título de la charla"
         style={{ background: "transparent", border: "none", fontSize: "2.2rem" }}
