@@ -61,16 +61,21 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       const active = data.participants.find(p => p.id === data.activeParticipantId)
-      if (active && active.timeLeft > 0) {
-        dispatch(updateParticipant({
-          ...active,
-          timeLeft: active.timeLeft - 1,
-          totalUsed: active.totalUsed + 1,
-          roundTimes: {
-            ...active.roundTimes,
-            [data.round]: (active.roundTimes[data.round] || 0) + 1
-          }
-        }))
+      if (active) {
+        if (active.timeLeft > 0) {
+          dispatch(updateParticipant({
+            ...active,
+            timeLeft: active.timeLeft - 1,
+            totalUsed: active.totalUsed + 1,
+            roundTimes: {
+              ...active.roundTimes,
+              [data.round]: (active.roundTimes[data.round] || 0) + 1
+            }
+          }))
+        } else {
+          // Pausar automáticamente cuando el tiempo llega a 0
+          dispatch(toggleTimer(active.id))
+        }
       }
     }, 1000)
     return () => clearInterval(interval)
