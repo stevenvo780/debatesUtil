@@ -56,7 +56,7 @@ export default function ParticipantsSection({
                         className="icon-button"
                         onClick={(e) => editParticipant(p.id, e)}
                         aria-label="Editar participante">
-                        <BsPencil style={{color: '#6c757d'}} />
+                        <BsPencil style={{color: '#6c757d', width: '2rem', height: '2rem'}} />
                       </Button>
                     </div>
                   </div>
@@ -81,7 +81,7 @@ export default function ParticipantsSection({
                     <div className="penalties-group d-flex align-items-center gap-1">
                       <span className={dangerClass ? "text-white" : "text-danger"}>
                         {p.penalties > 0 && (
-                          <><BsExclamationTriangle style={{width: '1.8rem', color: '#dc3545'}} /> {p.penalties}</>
+                          <><BsExclamationTriangle style={{width: '1.4rem', color: '#dc3545'}} /> {p.penalties}</>
                         )}
                       </span>
                       <Button
@@ -89,7 +89,7 @@ export default function ParticipantsSection({
                         className="icon-button"
                         onClick={(e) => addPenalty(p.id, e)}
                         title={t('penalties')}>
-                        <BsExclamationTriangle style={{color: '#dc3545'}} />
+                        <BsExclamationTriangle style={{color: '#dc3545', width: '1.4rem', height: '1.4rem'}} />
                       </Button>
                     </div>
                     
@@ -99,14 +99,14 @@ export default function ParticipantsSection({
                         className="icon-button"
                         onClick={(e) => resetTime(p.id, e)}
                         title={t('reset')}>
-                        <BsArrowCounterclockwise style={{color: '#0dcaf0'}} />
+                        <BsArrowCounterclockwise style={{color: '#0dcaf0', width: '1.4rem', height: '1.4rem'}} />
                       </Button>
                       <Button 
                         variant="link" 
                         className="icon-button"
                         onClick={(e) => removeParticipant(p.id, e)}
                         title={t('remove')}>
-                        <BsTrash style={{color: '#dc3545'}} />
+                        <BsTrash style={{color: '#dc3545', width: '1.4rem', height: '1.4rem'}} />
                       </Button>
                     </div>
                   </div>
