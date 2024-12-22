@@ -35,6 +35,7 @@ export default function App() {
   const [editParticipantName, setEditParticipantName] = useState("")
   const [editParticipantTime, setEditParticipantTime] = useState(1)
   const [statsContent, setStatsContent] = useState("")
+  const [editParticipantPenalties, setEditParticipantPenalties] = useState(0)
 
   const t = (key) => translations[data.language][key]
   
@@ -149,7 +150,8 @@ export default function App() {
       ...p,
       name: editParticipantName.trim(),
       initialTime: parseFloat(editParticipantTime),
-      timeLeft: parseFloat(editParticipantTime) * 60
+      timeLeft: parseFloat(editParticipantTime) * 60,
+      penalties: editParticipantPenalties
     }))
     setShowEditModal(false)
   }
@@ -194,7 +196,12 @@ export default function App() {
     setEditParticipantId(p.id)
     setEditParticipantName(p.name)
     setEditParticipantTime(p.initialTime)
+    setEditParticipantPenalties(p.penalties)
     setShowEditModal(true)
+  }
+
+  function handlePenaltyChange(change) {
+    setEditParticipantPenalties(prev => Math.max(0, prev + change))
   }
 
   function handleChangeAllTime() {
@@ -295,6 +302,8 @@ export default function App() {
         setEditParticipantName={setEditParticipantName}
         setEditParticipantTime={setEditParticipantTime}
         saveParticipantChanges={handleSaveParticipantChanges}
+        currentPenalties={editParticipantPenalties}
+        onPenaltyChange={handlePenaltyChange}
       />
     </>
   )
