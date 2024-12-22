@@ -14,7 +14,7 @@ export const translations = {
     remove: "Remove",
     globalTime: "Global Time",
     activeTimer: "Active Timer",
-    noActiveParticipant: "No Active Participant",
+    noActiveParticipant: "Pause",
     chatTitle: "Talk Title",
     round: "Round",
     newRound: "New Round",
@@ -29,7 +29,13 @@ export const translations = {
     save: "Save",
     close: "Close",
     statsTitle: "Session Stats",
-    participant: "Interventions"
+    participant: "Interventions",
+    resetConfirmTitle: "Reset Confirmation",
+    resetConfirmMessage: "What would you like to reset?",
+    resetGame: "Reset Game",
+    resetAll: "Reset All",
+    resetGameDescription: "Reset only game data (rounds, times, penalties)",
+    resetAllDescription: "Reset everything (including participants and title)"
   },
   es: {
     title: "Moderador de Debate",
@@ -61,6 +67,12 @@ export const translations = {
     save: "Guardar",
     close: "Cerrar",
     statsTitle: "Estadísticas de Sesión",
-    participant: "Intervenciones"
+    participant: "Intervenciones",
+    resetConfirmTitle: "Confirmar Reinicio",
+    resetConfirmMessage: "¿Qué desea reiniciar?",
+    resetGame: "Reiniciar Partida",
+    resetAll: "Reiniciar Todo",
+    resetGameDescription: "Reiniciar solo datos de juego (rondas, tiempos, penalizaciones)",
+    resetAllDescription: "Reiniciar todo (incluyendo participantes y título)"
   }
 }

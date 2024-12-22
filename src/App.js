@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Container, Button } from "react-bootstrap"
+import { Container, Button, Modal } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
 import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
@@ -20,6 +20,7 @@ import {
   setGlobalSession,
   setGlobalTitle,
   resetStore,
+  resetGame,    // Agregamos resetGame
   setLanguage
 } from "./store/debateSlice"
 import "./App.css"
@@ -36,6 +37,7 @@ export default function App() {
   const [editParticipantTime, setEditParticipantTime] = useState(1)
   const [statsContent, setStatsContent] = useState("")
   const [editParticipantPenalties, setEditParticipantPenalties] = useState(0)
+  const [showResetModal, setShowResetModal] = useState(false)
 
   const t = (key) => translations[data.language][key]
   
@@ -230,6 +232,20 @@ export default function App() {
     setShowStatsModal(true)
   }
 
+  function handleResetConfirmation() {
+    setShowResetModal(true)
+  }
+
+  function handleResetGame() {
+    dispatch(resetGame())
+    setShowResetModal(false)
+  }
+
+  function handleResetAll() {
+    dispatch(resetStore())
+    setShowResetModal(false)
+  }
+
   const { activeTimeLeft, activeTimer } = useTimerLogic(data)
   const activeParticipant = data.participants.find((p) => p.id === data.activeParticipantId)
 
@@ -259,7 +275,7 @@ export default function App() {
           round={data.round}
           updateRoundValue={handleUpdateRound}
           newRound={handleNewRound}
-          resetStorage={() => dispatch(resetStore())}
+          resetStorage={handleResetConfirmation}
           showStats={showStats}
           globalTimeInput={data.globalTimeInput}
           setGlobalTimeInput={(val) => dispatch(setGlobalTimeInput(val))}
@@ -305,6 +321,24 @@ export default function App() {
         currentPenalties={editParticipantPenalties}
         onPenaltyChange={handlePenaltyChange}
       />
+      <Modal show={showResetModal} onHide={() => setShowResetModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{t('resetConfirmTitle')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{t('resetConfirmMessage')}</p>
+          <div className="d-grid gap-2">
+            <Button variant="warning" onClick={handleResetGame}>
+              {t('resetGame')}
+              <small className="d-block">{t('resetGameDescription')}</small>
+            </Button>
+            <Button variant="danger" onClick={handleResetAll}>
+              {t('resetAll')}
+              <small className="d-block">{t('resetAllDescription')}</small>
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   )
 }

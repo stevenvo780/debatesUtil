@@ -40,7 +40,7 @@ export default function ActiveTimerSection({
       </Row>
       <div style={{ textAlign: "center", marginBottom: "1rem" }}>
         <div style={{ fontSize: "1.5rem" }}>
-          {activeParticipant ? activeParticipant.name : "No Active Participant"}
+          {activeParticipant ? activeParticipant.name : "Pause"}
         </div>
         <div style={{ fontSize: "2.5rem", fontWeight: "bold" }}>
           {activeTimeLeft}

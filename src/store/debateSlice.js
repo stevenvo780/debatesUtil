@@ -83,6 +83,27 @@ export const debateSlice = createSlice({
         initialTime: savedInitialTime,
         globalSessionStart: Date.now()
       }
+    },
+    resetGame: (state) => {
+      const savedTimeInput = state.globalTimeInput;
+      const savedInitialTime = state.initialTime;
+      const savedParticipants = state.participants.map(p => ({
+        ...p,
+        timeLeft: p.initialTime * 60,
+        totalUsed: 0,
+        roundTimes: {},
+        penalties: 0
+      }));
+      const savedTitle = state.globalSessionTitle;
+      
+      return {
+        ...initialState,
+        globalTimeInput: savedTimeInput,
+        initialTime: savedInitialTime,
+        globalSessionStart: Date.now(),
+        globalSessionTitle: savedTitle,
+        participants: savedParticipants
+      };
     }
   }
 })
@@ -99,7 +120,8 @@ export const {
   setGlobalSession,
   setGlobalTitle,
   setLanguage,
-  resetStore
+  resetStore,
+  resetGame
 } = debateSlice.actions
 
 export default debateSlice.reducer
