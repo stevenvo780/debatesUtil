@@ -45,7 +45,7 @@ export const translations = {
     remove: "Eliminar",
     globalTime: "Tiempo Global",
     activeTimer: "Temporizador Activo",
-    noActiveParticipant: "Sin Participante Activo",
+    noActiveParticipant: "Pausa",
     chatTitle: "Título de la Charla",
     round: "Ronda",
     newRound: "Nueva Ronda",

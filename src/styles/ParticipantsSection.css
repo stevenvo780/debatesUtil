@@ -1,0 +1,49 @@
+.participant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important;
+}
+
+.participant-card:focus {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+.edit-button:hover {
+  background: rgba(0,0,0,0.1);
+  border-radius: 4px;
+}
+
+.time-left {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stats-grid small {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.icon-button {
+  padding: 0.25rem !important;
+  color: inherit;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+
+.icon-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.penalties-group {
+  font-size: 0.9rem;
+}
+
+.control-buttons {
+  margin-left: auto;
+}
+
+.stats-grid {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}

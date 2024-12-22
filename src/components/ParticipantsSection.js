@@ -1,5 +1,11 @@
 import React from "react"
 import { Row, Col, Card, Button } from "react-bootstrap"
+import { 
+  BsTrash, 
+  BsPencil, 
+  BsArrowCounterclockwise, 
+  BsExclamationTriangle 
+} from 'react-icons/bs'
 
 export default function ParticipantsSection({
   t,
@@ -30,46 +36,83 @@ export default function ParticipantsSection({
           }
           return (
             <Col key={p.id} xs={12} sm={6} md={3} lg={3}>
-              <Card className="mb-3 h-100" onClick={() => toggleTimer(p.id)}>
+              <Card 
+                className="mb-3 h-100 participant-card" 
+                style={{ 
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                role="button"
+                tabIndex={0}
+                onClick={() => toggleTimer(p.id)}>
                 <Card.Body style={animationStyle} className={`${dangerClass} ${textColorClass}`}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Card.Title>
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <Card.Title style={{ fontSize: '1.2rem', margin: 0 }}>
                       {p.name}
                     </Card.Title>
-                    <div style={{ cursor: "pointer" }} onClick={(e) => editParticipant(p.id, e)}>
-                      ✏️
+                    <div className="d-flex gap-1">
+                      <Button 
+                        variant="link"
+                        className="icon-button p-1"
+                        onClick={(e) => editParticipant(p.id, e)}
+                        aria-label="Editar participante">
+                        <BsPencil />
+                      </Button>
                     </div>
                   </div>
-                  <p className={textColorClass}>
-                    <strong>{t('roundTime')}:</strong> {formatTime(roundTime)}
-                  </p>
-                  <p className={textColorClass}>
-                    <strong>{t('totalUsed')}:</strong> {formatTime(p.totalUsed)}
-                  </p>
-                  <p className={textColorClass}>
-                    <strong>{t('timeLeft')}:</strong> {formatTime(p.timeLeft)}
-                  </p>
-                  <p>
-                    <span className={"badge " + statusClass}>{isActive ? t('active') : t('paused')}</span>
-                  </p>
-                  <p>
-                    <strong>{t('penalties')}:</strong>{" "}
-                    <span className={dangerClass ? "text-white" : "text-danger"}>{p.penalties}</span>{" "}
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      style={{ marginLeft: "0.5rem" }}
-                      onClick={(e) => addPenalty(p.id, e)}
-                    >
-                      +
-                    </Button>
-                  </p>
-                  <Button variant="info" size="sm" onClick={(e) => resetTime(p.id, e)}>
-                    {t('reset')}
-                  </Button>{" "}
-                  <Button variant="danger" size="sm" onClick={(e) => removeParticipant(p.id, e)}>
-                    {t('remove')}
-                  </Button>
+
+                  <div className="time-info mb-2">
+                    <h3 className={`time-left ${textColorClass}`} style={{fontSize: '1.8rem', textAlign: 'center', marginBottom: '0.2rem'}}>
+                      {formatTime(p.timeLeft)}
+                    </h3>
+                    <div className="d-flex justify-content-center">
+                      <span className={"badge " + statusClass}>{isActive ? t('active') : t('paused')}</span>
+                    </div>
+                  </div>
+
+                  <div className="stats-grid small mb-2">
+                    <div className={textColorClass}>
+                      <div>{t('roundTime')}: {formatTime(roundTime)}</div>
+                      <div>{t('totalUsed')}: {formatTime(p.totalUsed)}</div>
+                    </div>
+                  </div>
+
+                  <div className="actions d-flex justify-content-between align-items-center">
+                    <div className="penalties-group d-flex align-items-center">
+                      <span className={dangerClass ? "text-white" : "text-danger"}>
+                        {p.penalties > 0 && (
+                          <><BsExclamationTriangle /> {p.penalties}</>
+                        )}
+                      </span>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="icon-button p-1"
+                        onClick={(e) => addPenalty(p.id, e)}
+                        title={t('penalties')}>
+                        <BsExclamationTriangle className="text-danger" />
+                      </Button>
+                    </div>
+                    
+                    <div className="control-buttons d-flex gap-1">
+                      <Button 
+                        variant="link" 
+                        size="sm"
+                        className="icon-button p-1"
+                        onClick={(e) => resetTime(p.id, e)}
+                        title={t('reset')}>
+                        <BsArrowCounterclockwise className="text-info" />
+                      </Button>
+                      <Button 
+                        variant="link" 
+                        size="sm"
+                        className="icon-button p-1"
+                        onClick={(e) => removeParticipant(p.id, e)}
+                        title={t('remove')}>
+                        <BsTrash className="text-danger" />
+                      </Button>
+                    </div>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
