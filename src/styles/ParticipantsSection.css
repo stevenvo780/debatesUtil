@@ -1,6 +1,15 @@
+.participant-card {
+  position: relative;
+  transition: all 0.3s ease-in-out !important;
+}
+
+.participant-card:active {
+  transform: scale(0.98);
+}
+
 .participant-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12) !important;
 }
 
 .participant-card:focus {
@@ -13,24 +22,20 @@
   border-radius: 4px;
 }
 
-.time-left {
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.stats-grid small {
-  opacity: 0.7;
-  font-size: 0.8rem;
-}
-
 .icon-button {
   padding: 0.5rem !important;
   opacity: 0.9;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.icon-button:active {
+  transform: scale(0.95);
 }
 
 .icon-button:hover {
@@ -61,4 +66,59 @@
 .stats-grid {
   font-size: 0.85rem;
   opacity: 0.9;
+}
+
+.time-left {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.active-participant {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.penalties-badge {
+  transition: all 0.3s ease;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Mejoras de accesibilidad táctil */
+@media (max-width: 768px) {
+  .icon-button {
+    padding: 0.8rem !important;
+    margin: 0.2rem;
+  }
+  
+  .control-buttons {
+    gap: 0.5rem;
+  }
+}
+
+.bg-danger .penalties-group .icon-button {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.bg-danger .penalties-group .icon-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.bg-danger .penalties-group svg {
+  color: #ff8c8c !important;
+}
+
+.bg-danger .penalties-group span {
+  color: #ff8c8c !important;
 }
