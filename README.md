@@ -1,98 +1,145 @@
-# Debate Moderator Application
+# Debate Orchestrator
 
-This project is a web-based application to manage and moderate debates. It allows moderators to track participant times, manage rounds, and apply penalties. The application is built using HTML, CSS (Bootstrap), and JavaScript.
+Debate Orchestrator is a professional and free tool designed for managing and moderating competitive, academic, and school debates. It provides time control, automatic moderation, real-time statistics, and a user-friendly interface.
 
----
+## Key Features
 
-## Features
+- Time control for speakers.
+- Automatic turn management.
+- Penalty system.
+- Real-time statistics.
+- Multiple debate rounds.
+- Multilingual interface (Spanish/English).
+- Customizable times for each participant.
+- Statistics export.
+- Professional moderation for various debate formats.
 
-- **Participant Management**: Add, edit, and remove participants with their initial speaking times.
-- **Timer Tracking**: Real-time countdown timers for each participant.
-- **Round Management**: Switch between rounds and adjust participant times for each round.
-- **Penalty Tracking**: Apply penalties to participants as needed.
-- **Statistics Overview**: View a summary of total speaking times and penalties for each participant.
-- **Persistent Storage**: Save session data locally using `localStorage`.
-- **Responsive Design**: Works well across various screen sizes using Bootstrap.
+## Prerequisites
 
----
+- Node.js >= 18.
+- npm >= 8.
+- Modern browser with JavaScript enabled.
 
-## Setup
+## Installation
 
-No installation is required to run this application. Simply open the `index.html` file in any modern web browser.
+1. Clone the repository:
 
----
+   ```bash
+   git clone https://github.com/youruser/debate-moderator.git
+   cd debate-moderator
+   ```
 
-## How to Use
+2. Install dependencies:
 
-1. **Add Participants**:
-   - Enter the participant's name and their initial speaking time (in minutes).
-   - Click the "Add Participant" button to add them to the list.
+   ```bash
+   npm install
+   ```
 
-2. **Start Timer**:
-   - Click on a participant card to start or stop their timer.
+## Development
 
-3. **Manage Rounds**:
-   - Adjust the current round using the "Round" input.
-   - Click "New Round" to increment the round number and reset participant times.
-   - Use "Change All" to update all participants' speaking times globally.
+Start the development server:
 
-4. **Penalties**:
-   - Use the "+" button on a participant's card to apply penalties.
+```bash
+npm start
+```
 
-5. **Statistics**:
-   - Click "Show Stats" to view a modal with each participant's total time used and penalties.
+Access the app at [http://localhost:3000](http://localhost:3000).
 
-6. **Edit Participants**:
-   - Click the pencil icon on a participant card to edit their name or initial time.
+## Available Scripts
 
-7. **Reset All Data**:
-   - Click the "Reset All" button to clear all session data.
+- `npm start`: Runs the app in development mode.
+- `npm build`: Builds the app for production.
+- `npm test`: Runs the tests.
+- `npm eject`: Ejects CRA (Create React App) configurations.
+- `npm run dev`: Runs multiple processes concurrently (via `concurrently`).
 
----
+## Project Structure
 
-## Code Overview
+```plaintext
+.
+├── public
+│   ├── index.html          # Base HTML file
+│   └── favicon.ico         # App icon
+├── src
+│   ├── components          # Reusable components
+│   ├── hooks               # Custom hooks
+│   ├── store               # Redux Toolkit configuration
+│   ├── translations        # Multilingual translations
+│   ├── App.js              # Main component
+│   ├── App.css             # Global styles
+│   └── index.js            # Entry point
+├── package.json            # Project dependencies and scripts
+└── README.md               # Project documentation
+```
 
-- **HTML**: Provides the structure of the application, including forms, modals, and participant cards.
-- **CSS**: Includes Bootstrap for styling and custom styles for layout enhancements.
-- **JavaScript**:
-  - **Data Management**: Tracks participants, rounds, and timers in a `data` object.
-  - **Local Storage**: Saves and loads session data to/from the browser's `localStorage`.
-  - **Timer Logic**: Updates participant timers every second and handles session tracking.
-  - **Dynamic Rendering**: Updates participant cards and active timer displays dynamically.
+## Main Dependencies
 
----
+- **React**: Library for building user interfaces.
+- **Redux Toolkit**: Centralized state management.
+- **Bootstrap**: CSS framework for responsive design.
+- **react-bootstrap**: React components based on Bootstrap.
+- **redux-persist**: State persistence for Redux.
 
-## Customization
+## Development Dependencies
 
-To customize the application:
+- **concurrently**: Run multiple commands concurrently.
 
-1. **Style**: Modify the `<style>` section in the `<head>` or add custom CSS.
-2. **Logic**: Update JavaScript functions to change the behavior.
-3. **Bootstrap**: Adjust styles using Bootstrap classes or include additional components.
+## Multilingual Support
 
----
+The project supports two languages:
 
-## Known Issues
+- **Spanish** (es).
+- **English** (en).
 
-- Data is stored locally and will not persist across devices or browsers.
-- Rapid toggling of timers may cause slight discrepancies in recorded times.
+You can toggle between languages using the language switcher button on the interface.
 
----
+## Usage
 
-## Future Improvements
+### Adding Participants
+1. Enter the participant's name in the form.
+2. Define the initial time assigned to the participant.
+3. Click "Add Participant."
 
-- Implement server-side storage for shared access and persistent data.
-- Add sound notifications for timer completions or penalties.
-- Enhance UI/UX with animations or more intuitive controls.
+### Time Control
+- Start or pause the global timer.
+- Manage individual participant times.
+- Penalize participants as needed.
 
----
+### Statistics
+Access a summary of each participant's time usage and penalties in real-time.
 
-## Dependencies
+### Customization
+- Adjust times for each participant.
+- Set up customized rounds with specific times.
 
-- [Bootstrap 5.3](https://getbootstrap.com/): CSS framework for styling and layout.
+## Contribution
 
----
+1. Fork the repository.
+2. Create a new branch for your changes:
+
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+
+3. Make your changes and commit with descriptive messages.
+4. Submit a pull request with your changes.
+
+## SEO and Social Media
+
+The project includes configurations for improved SEO and social sharing:
+
+- **Meta Tags**: Detailed descriptions and keywords.
+- **Open Graph**: Facebook and Twitter compatibility.
+- **Structured Data**: JSON-LD for better search engine rankings.
+
+## Deployment
+
+This app can be deployed easily on platforms like [Vercel](https://vercel.com/) or [Netlify](https://www.netlify.com/).
 
 ## License
 
-This project is licensed under the MIT License. You are free to use, modify, and distribute it as you wish.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+Thank you for using Debate Orchestrator! If you have questions or suggestions, feel free to open an issue in the repository.
