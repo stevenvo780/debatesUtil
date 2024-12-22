@@ -21,7 +21,7 @@ export default function ParticipantsSection({
           const statusClass = isActive ? "bg-success" : "bg-secondary"
           const inDanger = p.timeLeft <= 0
           const dangerClass = inDanger ? "bg-danger" : ""
-          const textColorClass = p.timeLeft <= 20 ? "text-white" : ""
+          const textColorClass = p.timeLeft <= 15 ? "text-white" : ""
           let animationStyle = {}
           if (!inDanger && p.timeLeft <= 30) {
             const offset = 30 - p.timeLeft
@@ -32,8 +32,8 @@ export default function ParticipantsSection({
               <Card className="mb-3 h-100" onClick={() => toggleTimer(p.id)}>
                 <Card.Body style={animationStyle} className={`${dangerClass} ${textColorClass}`}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Card.Title style={{ marginBottom: 0 }}>
-                      {p.name} <small className="text-muted">#{p.shortId}</small>
+                    <Card.Title>
+                      {p.name}
                     </Card.Title>
                     <div style={{ cursor: "pointer" }} onClick={(e) => editParticipant(p.id, e)}>
                       ✏️
