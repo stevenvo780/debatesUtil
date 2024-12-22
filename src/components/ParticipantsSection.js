@@ -78,29 +78,25 @@ export default function ParticipantsSection({
                   </div>
 
                   <div className="actions d-flex justify-content-between align-items-center mt-3">
-                    <div className="penalties-group d-flex align-items-center gap-1">
-                      <span className={dangerClass ? "text-white" : "text-danger"}>
-                        {p.penalties > 0 && (
-                          <><BsFillExclamationTriangleFill style={{
-                              width: '1.4rem', 
-                              color: inDanger ? '#ff8c8c' : '#dc3545'
-                            }} /> {p.penalties}</>
-                        )}
-                      </span>
-                      <Button
-                        variant="link"
-                        className="icon-button"
-                        onClick={(e) => addPenalty(p.id, e)}
-                        title={t('penalties')}>
-                        <BsFillExclamationTriangleFill style={{
-                          color: inDanger ? '#ff8c8c' : '#dc3545',
-                          width: '1.4rem', 
-                          height: '1.4rem',
-                          background: inDanger ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                          padding: '2px',
-                          borderRadius: '4px'
-                        }} />
-                      </Button>
+                    <div className="penalties-group d-flex align-items-center">
+                      <div className="penalties-wrapper d-flex align-items-center gap-2">
+                        <span className={`penalties-count ${textColorClass}`}>
+                          {p.penalties}
+                        </span>
+                        <Button
+                          variant="link"
+                          className="icon-button p-0"
+                          onClick={(e) => addPenalty(p.id, e)}
+                          title={t('penalties')}>
+                          <BsFillExclamationTriangleFill style={{
+                            color: inDanger ? '#ff8c8c' : '#dc3545',
+                            width: '1.4rem', 
+                            height: '1.4rem',
+                            background: inDanger ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                            borderRadius: '4px'
+                          }} />
+                        </Button>
+                      </div>
                     </div>
                     
                     <div className="control-buttons d-flex gap-2">

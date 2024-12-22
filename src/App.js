@@ -92,7 +92,7 @@ export default function App() {
       totalUsed: 0,
       roundTimes: {},
       timeLeft: parseFloat(data.initialTime) * 60,
-      penalties: 0
+      penalties: 0  // Aseguramos que siempre empiece en 0
     }))
     setParticipantName("")
   }

@@ -49,14 +49,25 @@
   height: 1.5rem !important;
 }
 
-.penalties-group .icon-button svg {
+.penalties-group .icon-button {
   width: 1.8rem !important;
   height: 1.8rem !important;
   fill: currentColor;
+  padding: 0.4rem 0.6rem !important;
+  margin: 0;
 }
 
 .penalties-group {
   font-size: 0.9rem;
+}
+
+.penalties-count {
+  font-size: 1.2rem;
+  font-weight: 500;
+  min-width: 1rem;
+  text-align: center;
+  text-decoration: none !important;
+  color: inherit;
 }
 
 .control-buttons {
@@ -121,4 +132,19 @@
 
 .bg-danger .penalties-group span {
   color: #ff8c8c !important;
+}
+
+.penalties-wrapper {
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.penalties-wrapper:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.bg-danger .penalties-wrapper:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
