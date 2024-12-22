@@ -15,14 +15,7 @@
       padding: 1rem;
       margin-bottom: 1rem;
     }
-    .card-deck {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
     .card {
-      min-width: 280px;
-      max-width: 350px;
       cursor: pointer;
       transition: background-color 1s linear;
     }
@@ -39,33 +32,78 @@
       color: #fff !important;
     }
     @keyframes dyingGradient {
-      0% {
-        background-color: #ffc107;
-      }
-      100% {
-        background-color: #dc3545;
-      }
+      0% { background-color: #FFF9C4; }
+      20% { background-color: #FFF390; }
+      40% { background-color: #FFE066; }
+      60% { background-color: #FFC107; }
+      80% { background-color: #FF9800; }
+      100% { background-color: #DC3545; }
+    }
+    .card-body {
+      border-radius: inherit;
+    }
+    .card-body.bg-danger {
+      border-radius: inherit;
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
-    <div class="section-box">
-      <h2 class="mb-3">Debate Moderator</h2>
-      <div class="row g-3">
-        <div class="col-sm-6 col-md-4">
-          <label class="form-label">Participant Name</label>
-          <input type="text" class="form-control" id="participantName"/>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          <label class="form-label">Initial Time (minutes)</label>
-          <input type="number" class="form-control" id="initialTime" min="1" value="5"/>
-        </div>
-        <div class="col-sm-6 col-md-4 d-flex align-items-end">
-          <button class="btn btn-primary w-100" onclick="addParticipant()">Add Participant</button>
+    <!-- Sección: Tiempo General -->
+    <div class="section-box mb-3">
+      <div class="card">
+        <div class="card-body">
+          <input
+            id="chatTitle"
+            class="form-control"
+            placeholder="Título de la charla"
+            style="background: transparent; border: none; font-size: 1.2rem;"
+          />
+          <p
+            style="cursor:pointer; font-size:1.5rem; margin-top:1rem;"
+            onclick="toggleGlobalSession()"
+          >
+            <strong>Tiempo General:</strong> <span id="globalSessionClock">00:00</span>
+          </p>
         </div>
       </div>
     </div>
+    <div class="row">
+
+    <!-- Sección: Timer de la partida -->
+    <div class="section-box">
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-sm-6 col-md-4 d-flex">
+          <h5 class="mb-0 me-2">Active Timer:</h5>
+          <div id="activeTimerClock">00:00</div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-control"
+              id="globalTime"
+              placeholder="Set new time (minutes)"
+              min="1"
+              value="5"
+            />
+            <button class="btn btn-warning" onclick="changeAllTime()">Change All</button>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-sm-6 col-md-4 d-flex">
+          <h5 class="mb-0 me-2">Tiempo General:</h5>
+          <div id="globalSessionClock">00:00</div>
+        </div>
+      </div>
+      <div id="activeParticipantContainer" style="text-align:center;margin-bottom:1rem">
+        <div id="activeParticipantName" style="font-size:1.5rem">No Active Participant</div>
+        <div id="activeTimeLeftDisplay" style="font-size:2.5rem;font-weight:bold">00:00</div>
+      </div>
+    </div>
+
+    <!-- Sección: Rounds, reset, stats -->
     <div class="section-box">
       <div class="row g-3">
         <div class="col-sm-6 col-md-2 d-flex align-items-center">
@@ -91,33 +129,28 @@
         </div>
       </div>
     </div>
+
+    <!-- Sección: Participantes -->
     <div class="section-box">
-      <div class="row g-3 align-items-center mb-3">
-        <div class="col-sm-6 col-md-4 d-flex">
-          <h5 class="mb-0 me-2">Active Timer:</h5>
-          <div id="activeTimerClock">00:00</div>
+      <div class="row g-3" id="participantsDeck"></div>
+    </div>
+
+    <!-- Sección: Formulario para añadir participante al final -->
+    <div class="section-box">
+      <h2 class="mb-3">Debate Moderator</h2>
+      <div class="row g-3">
+        <div class="col-sm-6 col-md-4">
+          <label class="form-label">Participant Name</label>
+          <input type="text" class="form-control" id="participantName"/>
         </div>
         <div class="col-sm-6 col-md-4">
-          <div class="input-group">
-            <input
-              type="number"
-              class="form-control"
-              id="globalTime"
-              placeholder="Set new time (minutes)"
-              min="1"
-              value="5"
-            />
-            <button class="btn btn-warning" onclick="changeAllTime()">Change All</button>
-          </div>
+          <label class="form-label">Initial Time (minutes)</label>
+          <input type="number" class="form-control" id="initialTime" min="1" value="5"/>
+        </div>
+        <div class="col-sm-6 col-md-4 d-flex align-items-end">
+          <button class="btn btn-primary w-100" onclick="addParticipant()">Add Participant</button>
         </div>
       </div>
-      <div id="activeParticipantContainer" style="text-align:center;margin-bottom:1rem">
-        <div id="activeParticipantName" style="font-size:1.5rem">No Active Participant</div>
-        <div id="activeTimeLeftDisplay" style="font-size:2.5rem;font-weight:bold">00:00</div>
-      </div>
-    </div>
-    <div class="section-box">
-      <div class="card-deck" id="participantsDeck"></div>
     </div>
   </div>
   <div class="modal fade" id="statsModal" tabindex="-1">
@@ -168,6 +201,10 @@
       sessionStart: null
     };
 
+    let globalSessionStart = Date.now();
+    let globalSessionPaused = false;
+    let globalSessionPausedAt = null;
+
     function canUseLocalStorage() {
       try {
         localStorage.setItem("test", "test");
@@ -182,6 +219,10 @@
       if (!canUseLocalStorage()) return;
       let stored = localStorage.getItem("debateData");
       if (stored) data = JSON.parse(stored);
+      if (data.globalSessionTitle === undefined) data.globalSessionTitle = "";
+      if (data.globalSessionStart === undefined) data.globalSessionStart = Date.now();
+      if (data.globalSessionPaused === undefined) data.globalSessionPaused = false;
+      if (data.globalSessionPausedAt === undefined) data.globalSessionPausedAt = null;
     }
 
     function saveData() {
@@ -316,6 +357,7 @@
       renderParticipants();
       renderActiveClock();
       renderActiveParticipantDisplay();
+      renderGlobalSessionClock();
     }
 
     function renderActiveClock() {
@@ -326,6 +368,12 @@
       }
       let secs = Math.floor((Date.now() - data.sessionStart) / 1000);
       clock.textContent = formatTime(secs);
+    }
+
+    function renderGlobalSessionClock() {
+      if (data.globalSessionPaused) return;
+      let elapsed = Math.floor((Date.now() - data.globalSessionStart) / 1000);
+      document.getElementById("globalSessionClock").textContent = formatTime(elapsed);
     }
 
     function renderActiveParticipantDisplay() {
@@ -354,38 +402,39 @@
         if (p.timeLeft <= 0) {
           dangerClass = "bg-danger";
         } else if (p.timeLeft <= 30) {
-          animationStyle = `style="animation: dyingGradient ${p.timeLeft}s linear forwards"`;
+          let offset = 30 - p.timeLeft;
+          animationStyle = `style="animation: dyingGradient 30s linear -${offset}s forwards;"`;
         }
 
-        let card = document.createElement("div");
-        card.className = "card";
-        card.onclick = () => toggleTimer(p.id);
-
-        card.innerHTML = `
-          <div class="card-body" ${animationStyle}>
-            <h5 class="card-title d-flex justify-content-between align-items-center">
-              <span>${p.name}</span>
-              <span style="cursor:pointer" onclick="editParticipant(${p.id}, event)">✏️</span>
-            </h5>
-            <p class="card-text"><strong>Round Time:</strong> ${formatTime(roundTime)}</p>
-            <p class="card-text"><strong>Total Used:</strong> ${formatTime(p.totalUsed)}</p>
-            <p class="card-text"><strong>Time Left:</strong> ${formatTime(p.timeLeft)}</p>
-            <p class="card-text">
-              <span class="badge ${statusClass}">${isActive ? "Active" : "Paused"}</span>
-            </p>
-            <p class="card-text">
-              <strong>Penalties:</strong> <span class="text-danger">${p.penalties}</span>
-              <button class="btn btn-sm btn-danger ms-2" onclick="addPenalty(${p.id}, event)">+</button>
-            </p>
-            <button class="btn btn-info btn-sm me-1" onclick="resetTime(${p.id}, event)">Reset</button>
-            <button class="btn btn-danger btn-sm" onclick="removeParticipant(${p.id}, event)">Remove</button>
+        let col = document.createElement("div");
+        col.className = "col-12 col-sm-6 col-md-3 col-lg-3";
+        col.innerHTML = `
+          <div class="card mb-3 h-100">
+            <div class="card-body" ${animationStyle}>
+              <h5 class="card-title d-flex justify-content-between align-items-center">
+                <span>${p.name}</span>
+                <span style="cursor:pointer" onclick="editParticipant(${p.id}, event)">✏️</span>
+              </h5>
+              <p class="card-text"><strong>Round Time:</strong> ${formatTime(roundTime)}</p>
+              <p class="card-text"><strong>Total Used:</strong> ${formatTime(p.totalUsed)}</p>
+              <p class="card-text"><strong>Time Left:</strong> ${formatTime(p.timeLeft)}</p>
+              <p class="card-text">
+                <span class="badge ${statusClass}">${isActive ? "Active" : "Paused"}</span>
+              </p>
+              <p class="card-text">
+                <strong>Penalties:</strong> <span class="text-danger">${p.penalties}</span>
+                <button class="btn btn-sm btn-danger ms-2" onclick="addPenalty(${p.id}, event)">+</button>
+              </p>
+              <button class="btn btn-info btn-sm me-1" onclick="resetTime(${p.id}, event)">Reset</button>
+              <button class="btn btn-danger btn-sm" onclick="removeParticipant(${p.id}, event)">Remove</button>
+            </div>
           </div>
         `;
-
+        col.querySelector(".card").onclick = () => toggleTimer(p.id);
         if (dangerClass) {
-          card.firstElementChild.classList.add("bg-danger");
+          col.querySelector(".card-body").classList.add("bg-danger");
         }
-        deck.appendChild(card);
+        deck.appendChild(col);
       });
     }
 
@@ -415,6 +464,18 @@
       new bootstrap.Modal(document.getElementById("statsModal")).show();
     }
 
+    function toggleGlobalSession() {
+      if (!data.globalSessionPaused) {
+        data.globalSessionPaused = true;
+        data.globalSessionPausedAt = Date.now();
+      } else {
+        data.globalSessionPaused = false;
+        let pausedDuration = Date.now() - data.globalSessionPausedAt;
+        data.globalSessionStart += pausedDuration;
+      }
+      saveData();
+    }
+
     function formatTime(sec) {
       let m = Math.floor(sec / 60);
       let s = sec % 60;
@@ -425,6 +486,15 @@
     document.getElementById("roundCount").value = data.round;
     renderParticipants();
     setInterval(tick, 1000);
+
+    window.addEventListener("load", () => {
+      let titleInput = document.getElementById("chatTitle");
+      titleInput.value = data.globalSessionTitle;
+      titleInput.addEventListener("input", () => {
+        data.globalSessionTitle = titleInput.value;
+        saveData();
+      });
+    });
   </script>
 </body>
 </html>
