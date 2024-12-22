@@ -20,11 +20,11 @@ import {
   setGlobalSession,
   setGlobalTitle,
   resetStore,
-  resetGame,    // Agregamos resetGame
+  resetGame,
   setLanguage
 } from "./store/debateSlice"
 import "./App.css"
-import { useTimerLogic } from './hooks/useTimerLogic'  // Nuevo hook
+import { useTimerLogic } from './hooks/useTimerLogic'
 import ConfirmationModals from './components/ConfirmationModals'
 
 export default function App() {
@@ -80,7 +80,6 @@ export default function App() {
             }
           }))
         } else {
-          // Pausar automáticamente cuando el tiempo llega a 0
           dispatch(toggleTimer(active.id))
         }
       }
@@ -99,7 +98,7 @@ export default function App() {
       totalUsed: 0,
       roundTimes: {},
       timeLeft: parseFloat(data.initialTime) * 60,
-      penalties: 0  // Aseguramos que siempre empiece en 0
+      penalties: 0
     }))
     setParticipantName("")
   }
@@ -336,7 +335,7 @@ export default function App() {
         />
       </Container>
       <StatsModal
-        t={t}  // Añadimos la función de traducción
+        t={t}
         show={showStatsModal}
         onHide={() => setShowStatsModal(false)}
         statsContent={statsContent}
