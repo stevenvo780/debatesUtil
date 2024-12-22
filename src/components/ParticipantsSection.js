@@ -50,13 +50,13 @@ export default function ParticipantsSection({
                     <Card.Title style={{ fontSize: '1.2rem', margin: 0 }}>
                       {p.name}
                     </Card.Title>
-                    <div className="d-flex gap-1">
+                    <div className="d-flex gap-2">
                       <Button 
                         variant="link"
-                        className="icon-button p-1"
+                        className="icon-button"
                         onClick={(e) => editParticipant(p.id, e)}
                         aria-label="Editar participante">
-                        <BsPencil />
+                        <BsPencil style={{color: '#6c757d'}} />
                       </Button>
                     </div>
                   </div>
@@ -77,39 +77,36 @@ export default function ParticipantsSection({
                     </div>
                   </div>
 
-                  <div className="actions d-flex justify-content-between align-items-center">
-                    <div className="penalties-group d-flex align-items-center">
+                  <div className="actions d-flex justify-content-between align-items-center mt-3">
+                    <div className="penalties-group d-flex align-items-center gap-1">
                       <span className={dangerClass ? "text-white" : "text-danger"}>
                         {p.penalties > 0 && (
-                          <><BsExclamationTriangle /> {p.penalties}</>
+                          <><BsExclamationTriangle style={{width: '1.8rem', color: '#dc3545'}} /> {p.penalties}</>
                         )}
                       </span>
                       <Button
                         variant="link"
-                        size="sm"
-                        className="icon-button p-1"
+                        className="icon-button"
                         onClick={(e) => addPenalty(p.id, e)}
                         title={t('penalties')}>
-                        <BsExclamationTriangle className="text-danger" />
+                        <BsExclamationTriangle style={{color: '#dc3545'}} />
                       </Button>
                     </div>
                     
-                    <div className="control-buttons d-flex gap-1">
+                    <div className="control-buttons d-flex gap-2">
                       <Button 
                         variant="link" 
-                        size="sm"
-                        className="icon-button p-1"
+                        className="icon-button"
                         onClick={(e) => resetTime(p.id, e)}
                         title={t('reset')}>
-                        <BsArrowCounterclockwise className="text-info" />
+                        <BsArrowCounterclockwise style={{color: '#0dcaf0'}} />
                       </Button>
                       <Button 
                         variant="link" 
-                        size="sm"
-                        className="icon-button p-1"
+                        className="icon-button"
                         onClick={(e) => removeParticipant(p.id, e)}
                         title={t('remove')}>
-                        <BsTrash className="text-danger" />
+                        <BsTrash style={{color: '#dc3545'}} />
                       </Button>
                     </div>
                   </div>
