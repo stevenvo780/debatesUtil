@@ -1,4 +1,3 @@
-
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
@@ -11,7 +10,8 @@ const initialState = {
   globalSessionPaused: false,
   globalSessionPausedAt: null,
   globalTimeInput: 5,
-  initialTime: 5
+  initialTime: 5,
+  language: 'es' // default language
 }
 
 export const debateSlice = createSlice({
@@ -63,6 +63,9 @@ export const debateSlice = createSlice({
     setGlobalTitle: (state, action) => {
       state.globalSessionTitle = action.payload
     },
+    setLanguage: (state, action) => {
+      state.language = action.payload
+    },
     resetStore: (state) => {
       const savedTimeInput = state.globalTimeInput
       const savedInitialTime = state.initialTime
@@ -87,6 +90,7 @@ export const {
   updateParticipant,
   setGlobalSession,
   setGlobalTitle,
+  setLanguage,
   resetStore
 } = debateSlice.actions
 

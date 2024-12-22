@@ -2,6 +2,7 @@ import React from "react"
 import { Row, Col, Button, Form, InputGroup } from "react-bootstrap"
 
 export default function ControlPanel({
+  t,
   round,
   updateRoundValue,
   newRound,
@@ -15,7 +16,7 @@ export default function ControlPanel({
     <div className="section-box">
       <Row className="g-3">
         <Col sm={6} md={2} className="d-flex align-items-center">
-          <Form.Label className="me-2 mb-0">Round</Form.Label>
+          <Form.Label className="me-2 mb-0">{t('round')}</Form.Label>
           <Form.Control
             type="number"
             style={{ width: "80px" }}
@@ -28,7 +29,7 @@ export default function ControlPanel({
           <InputGroup>
             <Form.Control
               type="number"
-              placeholder="Minutes"
+              placeholder={t('minutes')}
               min="0"
               value={Math.floor(globalTimeInput)}
               onChange={(e) => setGlobalTimeInput(Number(e.target.value) + (globalTimeInput % 1))}
@@ -36,7 +37,7 @@ export default function ControlPanel({
             />
             <Form.Control
               type="number"
-              placeholder="Seconds"
+              placeholder={t('seconds')}
               min="0"
               max="59"
               value={Math.round((globalTimeInput % 1) * 60)}
@@ -49,23 +50,23 @@ export default function ControlPanel({
               style={{textAlign: 'center'}}
             />
             <Button variant="warning" onClick={changeAllTime}>
-              Change Time
+              {t('changeTime')}
             </Button>
           </InputGroup>
         </Col>
         <Col sm={6} md={2}>
           <Button variant="secondary" className="w-100" onClick={newRound}>
-            New Round
+            {t('newRound')}
           </Button>
         </Col>
         <Col sm={6} md={2}>
           <Button variant="danger" className="w-100" onClick={resetStorage}>
-            Reset All
+            {t('resetAll')}
           </Button>
         </Col>
         <Col sm={6} md={2}>
           <Button variant="info" className="w-100" onClick={showStats}>
-            Show Stats
+            {t('showStats')}
           </Button>
         </Col>
       </Row>

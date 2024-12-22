@@ -65,3 +65,16 @@ body {
 .card-body.bg-danger {
   border-radius: inherit;
 }
+
+.language-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.language-toggle:hover {
+  opacity: 1;
+}

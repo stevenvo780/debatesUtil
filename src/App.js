@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Container } from "react-bootstrap"
+import { Container, Button } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
 import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
 import ParticipantForm, { generateShortId } from "./components/ParticipantForm"
 import StatsModal from "./components/StatsModal"
 import EditModal from "./components/EditModal"
+import { translations } from './translations'
 import {
   addParticipant,
   removeParticipant,
@@ -18,7 +19,8 @@ import {
   updateParticipant,
   setGlobalSession,
   setGlobalTitle,
-  resetStore
+  resetStore,
+  setLanguage
 } from "./store/debateSlice"
 import "./App.css"
 
@@ -32,6 +34,12 @@ export default function App() {
   const [editParticipantName, setEditParticipantName] = useState("")
   const [editParticipantTime, setEditParticipantTime] = useState(1)
   const [statsContent, setStatsContent] = useState("")
+
+  const t = (key) => translations[data.language][key]
+  
+  const toggleLanguage = () => {
+    dispatch(setLanguage(data.language === 'es' ? 'en' : 'es'))
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -219,8 +227,17 @@ export default function App() {
 
   return (
     <>
+      <Button 
+        variant="outline-secondary" 
+        size="sm" 
+        onClick={toggleLanguage}
+        className="language-toggle"
+      >
+        {data.language === 'es' ? 'EN' : 'ES'}
+      </Button>
       <Container className="py-4">
         <GlobalSessionCard
+          t={t}
           globalSessionTitle={data.globalSessionTitle}
           getGlobalSessionClock={getGlobalSessionClock}
           toggleGlobalSession={handleToggleGlobalSession}
@@ -230,6 +247,7 @@ export default function App() {
           activeTimeLeft={activeTimeLeft}
         />
         <ControlPanel
+          t={t}
           round={data.round}
           updateRoundValue={handleUpdateRound}
           newRound={handleNewRound}
@@ -240,6 +258,7 @@ export default function App() {
           changeAllTime={handleChangeAllTime}
         />
         <ParticipantsSection
+          t={t}
           participants={data.participants}
           round={data.round}
           activeParticipantId={data.activeParticipantId}
@@ -251,6 +270,7 @@ export default function App() {
           formatTime={formatTime}
         />
         <ParticipantForm
+          t={t}
           participantName={participantName}
           setParticipantName={setParticipantName}
           initialTime={data.initialTime}
@@ -264,6 +284,7 @@ export default function App() {
         statsContent={statsContent}
       />
       <EditModal
+        t={t}
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
         editParticipantId={editParticipantId}

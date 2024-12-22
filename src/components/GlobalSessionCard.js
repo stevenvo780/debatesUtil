@@ -36,7 +36,7 @@ export default function GlobalSessionCard({
             <div style={{ fontSize: "1.5rem" }}>
               {activeParticipant ? activeParticipant.name : "No Active Participant"}
             </div>
-            <div style={{ fontSize: "2.5rem", fontWeight: "bold" }}>
+            <div style={{ fontSize: "3.5rem", fontWeight: "bold" }}>
               {activeTimeLeft}
             </div>
           </div>

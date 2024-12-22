@@ -2,6 +2,7 @@ import React from "react"
 import { Row, Col, Card, Button } from "react-bootstrap"
 
 export default function ParticipantsSection({
+  t,
   participants,
   round,
   activeParticipantId,
@@ -40,19 +41,19 @@ export default function ParticipantsSection({
                     </div>
                   </div>
                   <p className={textColorClass}>
-                    <strong>Round Time:</strong> {formatTime(roundTime)}
+                    <strong>{t('roundTime')}:</strong> {formatTime(roundTime)}
                   </p>
                   <p className={textColorClass}>
-                    <strong>Total Used:</strong> {formatTime(p.totalUsed)}
+                    <strong>{t('totalUsed')}:</strong> {formatTime(p.totalUsed)}
                   </p>
                   <p className={textColorClass}>
-                    <strong>Time Left:</strong> {formatTime(p.timeLeft)}
+                    <strong>{t('timeLeft')}:</strong> {formatTime(p.timeLeft)}
                   </p>
                   <p>
-                    <span className={"badge " + statusClass}>{isActive ? "Active" : "Paused"}</span>
+                    <span className={"badge " + statusClass}>{isActive ? t('active') : t('paused')}</span>
                   </p>
                   <p>
-                    <strong>Penalties:</strong>{" "}
+                    <strong>{t('penalties')}:</strong>{" "}
                     <span className={dangerClass ? "text-white" : "text-danger"}>{p.penalties}</span>{" "}
                     <Button
                       variant="danger"
@@ -64,10 +65,10 @@ export default function ParticipantsSection({
                     </Button>
                   </p>
                   <Button variant="info" size="sm" onClick={(e) => resetTime(p.id, e)}>
-                    Reset
+                    {t('reset')}
                   </Button>{" "}
                   <Button variant="danger" size="sm" onClick={(e) => removeParticipant(p.id, e)}>
-                    Remove
+                    {t('remove')}
                   </Button>
                 </Card.Body>
               </Card>
