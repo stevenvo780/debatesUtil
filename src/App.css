@@ -1,0 +1,52 @@
+body {
+  background: #f8f9fa;
+}
+.section-box {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.card {
+  cursor: pointer;
+  transition: background-color 1s linear;
+}
+.bg-danger {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+.bg-secondary {
+  background-color: #6c757d !important;
+  color: #fff !important;
+}
+.bg-success {
+  background-color: #198754 !important;
+  color: #fff !important;
+}
+@keyframes dyingGradient {
+  0% {
+    background-color: #FFF9C4;
+  }
+  20% {
+    background-color: #FFF390;
+  }
+  40% {
+    background-color: #FFE066;
+  }
+  60% {
+    background-color: #FFC107;
+  }
+  80% {
+    background-color: #FF9800;
+  }
+  100% {
+    background-color: #DC3545;
+  }
+}
+.card-body {
+  border-radius: inherit;
+}
+.card-body.bg-danger {
+  border-radius: inherit;
+}
