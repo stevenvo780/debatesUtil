@@ -6,6 +6,7 @@ export const generateShortId = () => {
 }
 
 export default function ParticipantForm({
+  t,  // añadir t a los props
   participantName,
   setParticipantName,
   initialTime,
@@ -14,10 +15,10 @@ export default function ParticipantForm({
 }) {
   return (
     <div className="section-box">
-      <h2 className="mb-3">Debate Moderator</h2>
+      <h2 className="mb-3">{t('title')}</h2>
       <Row className="g-3">
         <Col sm={6} md={4}>
-          <Form.Label>Participant Name</Form.Label>
+          <Form.Label>{t('participantName')}</Form.Label>
           <Form.Control
             type="text"
             value={participantName}
@@ -25,7 +26,7 @@ export default function ParticipantForm({
           />
         </Col>
         <Col sm={6} md={4}>
-          <Form.Label>Initial Time (minutes)</Form.Label>
+          <Form.Label>{t('initialTime')}</Form.Label>
           <Form.Control
             type="number"
             min="1"
@@ -35,7 +36,7 @@ export default function ParticipantForm({
         </Col>
         <Col sm={6} md={4} className="d-flex align-items-end">
           <Button variant="primary" className="w-100" onClick={addParticipant}>
-            Add Participant
+            {t('addParticipant')}
           </Button>
         </Col>
       </Row>

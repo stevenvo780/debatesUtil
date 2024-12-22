@@ -279,6 +279,7 @@ export default function App() {
         />
       </Container>
       <StatsModal
+        t={t}  // Añadimos la función de traducción
         show={showStatsModal}
         onHide={() => setShowStatsModal(false)}
         statsContent={statsContent}

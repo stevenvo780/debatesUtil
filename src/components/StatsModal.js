@@ -1,18 +1,18 @@
 import React from "react"
 import { Modal, Button } from "react-bootstrap"
 
-export default function StatsModal({ show, onHide, statsContent }) {
+export default function StatsModal({ t, show, onHide, statsContent }) { // añadir t a los props
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>Final Stats</Modal.Title>
+        <Modal.Title>{t('statsTitle')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div dangerouslySetInnerHTML={{ __html: statsContent }} />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
-          Close
+          {t('close')}
         </Button>
       </Modal.Footer>
     </Modal>
