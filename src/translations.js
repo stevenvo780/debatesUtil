@@ -5,7 +5,7 @@ export const translations = {
     initialTime: "Initial Time (minutes)",
     addParticipant: "Add Participant",
     roundTime: "Round Time",
-    totalUsed: "Total Used",
+    totalUsed: "Total Used Time",
     timeLeft: "Time Left",
     penalties: "Penalties",
     active: "Active",
@@ -28,7 +28,8 @@ export const translations = {
     time: "Time",
     save: "Save",
     close: "Close",
-    statsTitle: "Session Stats"
+    statsTitle: "Session Stats",
+    participant: "Interventions"
   },
   es: {
     title: "Moderador de Debate",
@@ -36,7 +37,7 @@ export const translations = {
     initialTime: "Tiempo Inicial (minutos)",
     addParticipant: "Añadir Participante",
     roundTime: "Tiempo de Ronda",
-    totalUsed: "Tiempo Total",
+    totalUsed: "Tiempo Total Usado",
     timeLeft: "Tiempo Restante",
     penalties: "Penalizaciones",
     active: "Activo",
@@ -59,6 +60,7 @@ export const translations = {
     time: "Tiempo",
     save: "Guardar",
     close: "Cerrar",
-    statsTitle: "Estadísticas de Sesión"
+    statsTitle: "Estadísticas de Sesión",
+    participant: "Intervenciones"
   }
 }

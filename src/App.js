@@ -210,9 +210,9 @@ export default function App() {
       const participantInterventions = data.speakOrder.filter(s => s.participantId === p.id)
       content +=
         `<p><strong>${p.name}</strong><br/>` +
-        `Total Used: ${formatTime(p.totalUsed)}<br/>` +
-        `Interventions: ${participantInterventions.length}<br/>` +
-        `Penalties: ${p.penalties}</p>`
+        `${t('totalUsed')}: ${formatTime(p.totalUsed)}<br/>` +
+        `${t('participant')}: ${participantInterventions.length}<br/>` +
+        `${t('penalties')}: ${p.penalties}</p>`
     })
     setStatsContent(content)
     setShowStatsModal(true)
