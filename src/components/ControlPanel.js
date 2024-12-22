@@ -1,12 +1,15 @@
 import React from "react"
-import { Row, Col, Button, Form } from "react-bootstrap"
+import { Row, Col, Button, Form, InputGroup } from "react-bootstrap"
 
 export default function ControlPanel({
   round,
   updateRoundValue,
   newRound,
   resetStorage,
-  showStats
+  showStats,
+  globalTimeInput,
+  setGlobalTimeInput,
+  changeAllTime
 }) {
   return (
     <div className="section-box">
@@ -20,6 +23,35 @@ export default function ControlPanel({
             value={round}
             onChange={(e) => updateRoundValue(e.target.value)}
           />
+        </Col>
+        <Col sm={6} md={4}>
+          <InputGroup>
+            <Form.Control
+              type="number"
+              placeholder="Minutes"
+              min="0"
+              value={Math.floor(globalTimeInput)}
+              onChange={(e) => setGlobalTimeInput(Number(e.target.value) + (globalTimeInput % 1))}
+              style={{textAlign: 'center'}}
+            />
+            <Form.Control
+              type="number"
+              placeholder="Seconds"
+              min="0"
+              max="59"
+              value={Math.round((globalTimeInput % 1) * 60)}
+              onChange={(e) => {
+                const secs = Number(e.target.value)
+                if (secs >= 0 && secs <= 59) {
+                  setGlobalTimeInput(Math.floor(globalTimeInput) + (secs / 60))
+                }
+              }}
+              style={{textAlign: 'center'}}
+            />
+            <Button variant="warning" onClick={changeAllTime}>
+              Change Time
+            </Button>
+          </InputGroup>
         </Col>
         <Col sm={6} md={2}>
           <Button variant="secondary" className="w-100" onClick={newRound}>

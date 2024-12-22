@@ -129,14 +129,12 @@ export default function App() {
 
   function newRound() {
     const newRoundValue = data.round + 1
-    const newTimeValue = parseInt(globalTimeInput) || 5
-    const updatedParticipants = data.participants.map((p) => {
-      return {
-        ...p,
-        initialTime: newTimeValue,
-        timeLeft: newTimeValue * 60
-      }
-    })
+    const timeInSeconds = Math.floor(globalTimeInput * 60)
+    const updatedParticipants = data.participants.map((p) => ({
+      ...p,
+      initialTime: globalTimeInput,
+      timeLeft: timeInSeconds
+    }))
     const newData = {
       ...data,
       round: newRoundValue,
@@ -217,11 +215,12 @@ export default function App() {
   }
 
   function changeAllTime() {
-    if (!globalTimeInput || globalTimeInput < 1) return
+    if (globalTimeInput < 0) return
     const newData = { ...data }
+    const timeInSeconds = Math.floor(globalTimeInput * 60)
     newData.participants.forEach((p) => {
-      p.initialTime = parseInt(globalTimeInput)
-      p.timeLeft = parseInt(globalTimeInput) * 60
+      p.initialTime = globalTimeInput
+      p.timeLeft = timeInSeconds
     })
     handleDataChange(newData)
   }
@@ -286,9 +285,6 @@ export default function App() {
           toggleGlobalSession={toggleGlobalSession}
           onTitleChange={(val) => handleDataChange({ ...data, globalSessionTitle: val })}
           activeTimer={activeTimer}
-          globalTimeInput={globalTimeInput}
-          setGlobalTimeInput={setGlobalTimeInput}
-          changeAllTime={changeAllTime}
           activeParticipant={activeParticipant}
           activeTimeLeft={activeTimeLeft}
         />
@@ -298,6 +294,9 @@ export default function App() {
           newRound={newRound}
           resetStorage={resetStorage}
           showStats={showStats}
+          globalTimeInput={globalTimeInput}
+          setGlobalTimeInput={setGlobalTimeInput}
+          changeAllTime={changeAllTime}
         />
         <ParticipantsSection
           participants={data.participants}
