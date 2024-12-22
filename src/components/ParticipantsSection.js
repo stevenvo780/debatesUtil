@@ -21,6 +21,7 @@ export default function ParticipantsSection({
           const statusClass = isActive ? "bg-success" : "bg-secondary"
           const inDanger = p.timeLeft <= 0
           const dangerClass = inDanger ? "bg-danger" : ""
+          const textColorClass = p.timeLeft <= 20 ? "text-white" : ""
           let animationStyle = {}
           if (!inDanger && p.timeLeft <= 30) {
             const offset = 30 - p.timeLeft
@@ -29,27 +30,30 @@ export default function ParticipantsSection({
           return (
             <Col key={p.id} xs={12} sm={6} md={3} lg={3}>
               <Card className="mb-3 h-100" onClick={() => toggleTimer(p.id)}>
-                <Card.Body style={animationStyle} className={dangerClass ? "bg-danger" : ""}>
+                <Card.Body style={animationStyle} className={`${dangerClass} ${textColorClass}`}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Card.Title style={{ marginBottom: 0 }}>{p.name}</Card.Title>
+                    <Card.Title style={{ marginBottom: 0 }}>
+                      {p.name} <small className="text-muted">#{p.shortId}</small>
+                    </Card.Title>
                     <div style={{ cursor: "pointer" }} onClick={(e) => editParticipant(p.id, e)}>
                       ✏️
                     </div>
                   </div>
-                  <p>
+                  <p className={textColorClass}>
                     <strong>Round Time:</strong> {formatTime(roundTime)}
                   </p>
-                  <p>
+                  <p className={textColorClass}>
                     <strong>Total Used:</strong> {formatTime(p.totalUsed)}
                   </p>
-                  <p>
+                  <p className={textColorClass}>
                     <strong>Time Left:</strong> {formatTime(p.timeLeft)}
                   </p>
                   <p>
                     <span className={"badge " + statusClass}>{isActive ? "Active" : "Paused"}</span>
                   </p>
                   <p>
-                    <strong>Penalties:</strong> <span className="text-danger">{p.penalties}</span>{" "}
+                    <strong>Penalties:</strong>{" "}
+                    <span className={dangerClass ? "text-white" : "text-danger"}>{p.penalties}</span>{" "}
                     <Button
                       variant="danger"
                       size="sm"

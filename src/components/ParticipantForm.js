@@ -1,6 +1,10 @@
 import React from "react"
 import { Row, Col, Button, Form } from "react-bootstrap"
 
+export const generateShortId = () => {
+  return Math.random().toString(36).substring(2, 6).toUpperCase();
+}
+
 export default function ParticipantForm({
   participantName,
   setParticipantName,

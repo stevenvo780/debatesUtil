@@ -5,7 +5,7 @@ import { Container } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
 import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
-import ParticipantForm from "./components/ParticipantForm"
+import ParticipantForm, { generateShortId } from "./components/ParticipantForm"
 import StatsModal from "./components/StatsModal"
 import EditModal from "./components/EditModal"
 import {
@@ -69,8 +69,10 @@ export default function App() {
 
   function handleAddParticipant() {
     if (!participantName.trim() || data.initialTime < 1) return
+    const shortId = generateShortId()
     dispatch(addParticipant({
       id: Date.now(),
+      shortId: shortId,
       name: participantName.trim(),
       initialTime: parseFloat(data.initialTime),
       totalUsed: 0,

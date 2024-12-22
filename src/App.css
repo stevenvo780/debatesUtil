@@ -10,10 +10,10 @@ body {
 }
 .card {
   cursor: pointer;
-  transition: background-color 1s linear;
+  transition: background-color 1s linear, color 0.3s ease;
 }
 .bg-danger {
-  background-color: #dc3545 !important;
+  background-color: #85232d !important;
   color: #fff !important;
 }
 .bg-secondary {
@@ -28,20 +28,35 @@ body {
   0% {
     background-color: #FFF9C4;
   }
-  20% {
-    background-color: #FFF390;
+  10% {
+    background-color: #FFEA95;
   }
-  40% {
+  20% {
     background-color: #FFE066;
   }
-  60% {
+  30% {
+    background-color: #FFD54F;
+  }
+  40% {
     background-color: #FFC107;
   }
-  80% {
+  50% {
+    background-color: #FFB300;
+  }
+  60% {
     background-color: #FF9800;
   }
+  70% {
+    background-color: #FB8C00;
+  }
+  80% {
+    background-color: #F57C00;
+  }
+  90% {
+    background-color: #E65100;
+  }
   100% {
-    background-color: #DC3545;
+    background-color: #85232d;
   }
 }
 .card-body {
