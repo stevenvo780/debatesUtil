@@ -1,8 +1,8 @@
 import React from "react"
-import { Card, Form, Row, Col } from "react-bootstrap"
+import { Form, Row, Col } from "react-bootstrap"
 
 export default function GlobalSessionCard({
-  t,  // añadir t a los props
+  t,
   globalSessionTitle,
   getGlobalSessionClock,
   toggleGlobalSession,
