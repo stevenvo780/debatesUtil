@@ -15,7 +15,13 @@ export default function GlobalSessionCard({
     <div className="section-box">
       <Form.Control
         placeholder={t('chatTitle')}
-        style={{ background: "transparent", border: "none", fontSize: "2.2rem" }}
+        style={{ 
+          background: "transparent", 
+          border: "none", 
+          fontSize: "2.2rem",
+          color: "var(--font-color)"
+        }}
+        className="global-session-title"
         value={globalSessionTitle}
         onChange={(e) => onTitleChange(e.target.value)}
       />
