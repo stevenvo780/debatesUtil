@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Container, Button, Modal } from "react-bootstrap"
+import { Container, Button } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
 import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
@@ -21,7 +21,8 @@ import {
   setGlobalTitle,
   resetStore,
   resetGame,
-  setLanguage
+  setLanguage,
+  updateParticipantsOrder
 } from "./store/debateSlice"
 import "./App.css"
 import { useTimerLogic } from './hooks/useTimerLogic'
@@ -103,11 +104,6 @@ export default function App() {
     setParticipantName("")
   }
 
-  function handleRemoveParticipant(id, e) {
-    e.stopPropagation()
-    dispatch(removeParticipant(id))
-  }
-
   function handleUpdateRound(value) {
     dispatch(updateRound(parseInt(value)))
   }
@@ -126,16 +122,6 @@ export default function App() {
 
   function handleToggleTimer(id) {
     dispatch(toggleTimer(id))
-  }
-
-  function handleResetTime(id, e) {
-    e.stopPropagation()
-    const p = data.participants.find(x => x.id === id)
-    if (!p) return
-    dispatch(updateParticipant({
-      ...p,
-      timeLeft: p.initialTime * 60
-    }))
   }
 
   function handleAddPenalty(id, e) {
@@ -324,6 +310,7 @@ export default function App() {
           resetTime={handleResetTimeConfirmation}
           removeParticipant={handleDeleteConfirmation}
           formatTime={formatTime}
+          onReorder={(newOrder) => dispatch(updateParticipantsOrder(newOrder))}
         />
         <ParticipantForm
           t={t}

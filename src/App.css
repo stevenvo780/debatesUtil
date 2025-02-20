@@ -576,3 +576,94 @@ select:focus {
 .text-info {
   color: var(--info-color);
 }
+
+
+/* Estilos para modales */
+.modal-content {
+  background-color: var(--card-color);
+  color: var(--font-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--navbar-color);
+  border-radius: 12px 12px 0 0;
+  padding: 1rem;
+}
+
+.modal-title {
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  background-color: var(--card-color);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+  background-color: var(--navbar-color);
+  border-radius: 0 0 12px 12px;
+  padding: 1rem;
+}
+
+/* Botón de cerrar del modal */
+.btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.btn-close:hover {
+  filter: invert(0.8);
+  opacity: 1;
+}
+
+/* Estilos para formularios dentro de modales */
+.modal-body .form-label {
+  color: var(--font-color);
+  margin-bottom: 0.5rem;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+  background-color: var(--bg-color);
+  color: var(--font-color);
+  border: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+  background-color: var(--bg-color);
+  color: var(--font-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25);
+}
+
+/* Ajustes para texto en modales */
+.modal-body p,
+.modal-body li,
+.modal-body td,
+.modal-body th {
+  color: var(--font-color);
+}
+
+/* Ajustes para tablas dentro de modales */
+.modal-body .table {
+  color: var(--font-color);
+  background-color: var(--bg-color);
+}
+
+.modal-body .table th {
+  background-color: var(--primary-color);
+  color: var(--primary-text);
+}
+
+.modal-body .table td {
+  background-color: var(--card-color);
+}

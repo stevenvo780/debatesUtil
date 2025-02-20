@@ -104,6 +104,9 @@ export const debateSlice = createSlice({
         globalSessionTitle: savedTitle,
         participants: savedParticipants
       };
+    },
+    updateParticipantsOrder: (state, action) => {
+      state.participants = action.payload
     }
   }
 })
@@ -121,7 +124,8 @@ export const {
   setGlobalTitle,
   setLanguage,
   resetStore,
-  resetGame
+  resetGame,
+  updateParticipantsOrder  // nuevo reductor
 } = debateSlice.actions
 
 export default debateSlice.reducer
