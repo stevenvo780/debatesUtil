@@ -11,9 +11,9 @@ const initialState = {
   globalSessionPausedAt: null,
   globalTimeInput: 5,
   initialTime: 5,
-  language: 'es', // default language
-  speakOrder: [], // Array para guardar orden de intervenciones
-  lastInteractionTime: Date.now(), // Para validación de tiempos
+  language: 'es',
+  speakOrder: [],
+  lastInteractionTime: Date.now(),
 }
 
 export const debateSlice = createSlice({
@@ -125,7 +125,7 @@ export const {
   setLanguage,
   resetStore,
   resetGame,
-  updateParticipantsOrder  // nuevo reductor
+  updateParticipantsOrder
 } = debateSlice.actions
 
 export default debateSlice.reducer

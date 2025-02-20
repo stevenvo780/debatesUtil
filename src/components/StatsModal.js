@@ -1,7 +1,7 @@
 import React from "react"
 import { Modal, Button } from "react-bootstrap"
 
-export default function StatsModal({ t, show, onHide, statsContent }) { // añadir t a los props
+export default function StatsModal({ t, show, onHide, statsContent }) {
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
