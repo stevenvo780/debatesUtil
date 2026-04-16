@@ -98,7 +98,7 @@
   flex: 1;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.4rem 0.6rem;
   border-radius: 6px;
   border: 1px solid var(--card-border);
@@ -131,9 +131,12 @@
 }
 
 .criterion-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .criterion-points {
@@ -315,7 +318,7 @@
 
 .action-panel-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
 }
@@ -324,9 +327,11 @@
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--font-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .action-panel-close {
@@ -433,8 +438,8 @@
 /* ─── FALLACY LIST (grid) ─── */
 .fallacy-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
@@ -443,10 +448,10 @@
 .fallacy-item {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 0.3rem;
-  padding: 0.15rem 0.3rem;
+  gap: 0.35rem;
+  padding: 0.35rem 0.45rem;
   border-radius: 6px;
   background: var(--card-color);
   border: 1px solid transparent;
@@ -488,12 +493,15 @@
   border: none;
   color: var(--font-color);
   text-align: left;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   cursor: pointer;
   padding: 0.25rem 0.15rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
   border-radius: 4px;
   transition: color 0.15s;
 }
@@ -511,6 +519,7 @@
   display: flex;
   gap: 0.1rem;
   flex-shrink: 0;
+  align-self: flex-start;
   opacity: 0;
   transition: opacity 0.15s;
 }
