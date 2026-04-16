@@ -3,7 +3,7 @@ import {
   BsBook, BsTrophy, BsShield, BsPeople, BsEye, BsCpu,
   BsClockHistory, BsQuestionCircle, BsArrowRepeat, BsChatQuote,
   BsExclamationTriangle, BsMegaphone, BsLightning, BsStar,
-  BsHandThumbsUp, BsHandThumbsDown, BsXOctagon, BsArrowLeftRight,
+  BsHandThumbsUp, BsHandThumbsDown, BsXOctagon,
   BsPersonX, BsVolumeUp, BsBarChart, BsCalculator, BsAward,
   BsPeopleFill, BsGraphUp, BsBan, BsSliders, BsGear,
   BsFire, BsXLg

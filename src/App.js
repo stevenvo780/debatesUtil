@@ -52,6 +52,7 @@ export default function App() {
   const [showResetTimeModal, setShowResetTimeModal] = useState(false)
   const [selectedParticipantId, setSelectedParticipantId] = useState(null)
   const [showRulesModal, setShowRulesModal] = useState(false)
+  const [recentFallacyActions, setRecentFallacyActions] = useState([])
 
 
   const t = (key) => translations[data.language][key]
@@ -74,7 +75,7 @@ export default function App() {
       }
     }, 1000)
     return () => clearInterval(interval)
-  }, [data.globalSessionPaused, data.globalSessionStart])
+  }, [data.globalSessionPaused, data.globalSessionStart, dispatch])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -96,7 +97,7 @@ export default function App() {
       }
     }, 1000)
     return () => clearInterval(interval)
-  }, [data.activeParticipantId, data.participants, data.round])
+  }, [data.activeParticipantId, data.participants, data.round, dispatch])
 
   function handleAddParticipant() {
     if (!participantName.trim() || data.initialTime < 1) return
@@ -142,6 +143,69 @@ export default function App() {
       ...p,
       penalties: p.penalties + criterion.points
     }))
+  }
+
+  function applyParticipantDelta(participantId, delta) {
+    const participant = data.participants.find((item) => item.id === participantId)
+    if (!participant) return null
+    dispatch(updateParticipant({
+      ...participant,
+      penalties: participant.penalties + delta,
+    }))
+    return participant
+  }
+
+  function handleApplyFallacyAction(action) {
+    if (!data.activeParticipantId) return
+
+    const active = data.participants.find((item) => item.id === data.activeParticipantId)
+    if (!active) return
+
+    const changes = []
+
+    if (action.type === "landed") {
+      const updated = applyParticipantDelta(active.id, 2)
+      if (!updated) return
+      changes.push({ participantId: active.id, delta: 2, name: active.name })
+    }
+
+    if (action.type === "detected") {
+      if (!action.detectorId || action.detectorId === active.id) return
+      const detector = data.participants.find((item) => item.id === action.detectorId)
+      if (!detector) return
+
+      const updatedDetector = applyParticipantDelta(detector.id, 1)
+      const updatedActive = applyParticipantDelta(active.id, -2)
+      if (!updatedDetector || !updatedActive) return
+
+      changes.push({ participantId: detector.id, delta: 1, name: detector.name })
+      changes.push({ participantId: active.id, delta: -2, name: active.name })
+    }
+
+    if (!changes.length) return
+
+    setRecentFallacyActions((prev) => [
+      {
+        id: Date.now(),
+        fallacyName: action.fallacyName,
+        type: action.type,
+        speakerName: active.name,
+        detectorName: action.detectorName || null,
+        changes,
+      },
+      ...prev,
+    ].slice(0, 6))
+  }
+
+  function handleUndoFallacyAction(actionId) {
+    const action = recentFallacyActions.find((item) => item.id === actionId)
+    if (!action) return
+
+    action.changes.forEach((change) => {
+      applyParticipantDelta(change.participantId, -change.delta)
+    })
+
+    setRecentFallacyActions((prev) => prev.filter((item) => item.id !== actionId))
   }
 
   function handleSaveParticipantChanges() {
@@ -343,14 +407,18 @@ export default function App() {
           t={t}
           criteria={data.scoringCriteria}
           fallacies={data.fallacies}
+          participants={data.participants}
           onAddCriterion={(c) => dispatch(addCriterion(c))}
           onUpdateCriterion={(c) => dispatch(updateCriterion(c))}
           onRemoveCriterion={(id) => dispatch(removeCriterion(id))}
           onApplyCriterion={handleApplyCriterionToActive}
+          onApplyFallacyAction={handleApplyFallacyAction}
           onAddFallacy={(f) => dispatch(addFallacy(f))}
           onUpdateFallacy={(f) => dispatch(updateFallacy(f))}
           onRemoveFallacy={(id) => dispatch(removeFallacy(id))}
           activeParticipant={activeParticipant}
+          recentFallacyActions={recentFallacyActions}
+          onUndoFallacyAction={handleUndoFallacyAction}
         />
       </div>
       <StatsModal

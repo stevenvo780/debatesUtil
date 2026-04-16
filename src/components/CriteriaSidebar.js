@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { Button, Form, InputGroup } from "react-bootstrap"
-import { BsFillTrashFill, BsPlusCircleFill, BsPencilFill, BsCheckLg, BsXLg, BsSearch, BsShieldFill, BsLightningFill, BsJournalText } from "react-icons/bs"
+import { BsFillTrashFill, BsPlusCircleFill, BsPencilFill, BsCheckLg, BsXLg, BsSearch, BsShieldFill, BsLightningFill, BsJournalText, BsArrowCounterclockwise } from "react-icons/bs"
 import "../styles/CriteriaSidebar.css"
 
 const FALLACY_DEFS = {
@@ -40,14 +40,18 @@ export default function CriteriaSidebar({
   t,
   criteria,
   fallacies,
+  participants,
   onAddCriterion,
   onUpdateCriterion,
   onRemoveCriterion,
   onApplyCriterion,
+  onApplyFallacyAction,
   onAddFallacy,
   onUpdateFallacy,
   onRemoveFallacy,
   activeParticipant,
+  recentFallacyActions,
+  onUndoFallacyAction,
 }) {
   const [newName, setNewName] = useState("")
   const [newPoints, setNewPoints] = useState(1)
@@ -63,6 +67,7 @@ export default function CriteriaSidebar({
   const [selectedFallacy, setSelectedFallacy] = useState(null)
   const [flashAction, setFlashAction] = useState(null) // "landed" | "detected"
   const [defPopoverId, setDefPopoverId] = useState(null)
+  const [selectedDetectorId, setSelectedDetectorId] = useState(null)
 
   const handleAdd = () => {
     if (!newName.trim()) return
@@ -99,14 +104,30 @@ export default function CriteriaSidebar({
 
   const handleApplyFallacy = useCallback((type) => {
     if (!selectedFallacy || !activeParticipant) return
-    const points = FALLACY_SCORES[type]
-    onApplyCriterion({ name: selectedFallacy.name, points })
+    if (type === "detected" && (!selectedDetectorId || selectedDetectorId === activeParticipant.id)) return
+
+    const detector = (participants || []).find((item) => item.id === selectedDetectorId)
+
+    onApplyFallacyAction({
+      type,
+      fallacyName: selectedFallacy.name,
+      detectorId: type === "detected" ? selectedDetectorId : null,
+      detectorName: type === "detected" ? detector?.name || null : null,
+    })
+
     setFlashAction(type)
     setTimeout(() => {
       setFlashAction(null)
       setSelectedFallacy(null)
     }, 600)
-  }, [selectedFallacy, activeParticipant, onApplyCriterion])
+  }, [selectedFallacy, activeParticipant, selectedDetectorId, participants, onApplyFallacyAction])
+
+  useEffect(() => {
+    if (!activeParticipant || selectedDetectorId !== activeParticipant.id) return
+    setSelectedDetectorId(null)
+  }, [activeParticipant, selectedDetectorId])
+
+  const detectorOptions = (participants || []).filter((participant) => participant.id !== activeParticipant?.id)
 
   const filteredFallacies = (fallacies || []).filter(f =>
     f.name.toLowerCase().includes(fallacySearch.toLowerCase())
@@ -165,7 +186,14 @@ export default function CriteriaSidebar({
               {selectedFallacy && (
                 <div className={`fallacy-action-panel ${flashAction ? `flash-${flashAction}` : ""}`}>
                   <div className="action-panel-header">
-                    <span className="action-panel-name">{selectedFallacy.name}</span>
+                    <div className="action-panel-title-wrap">
+                      <span className="action-panel-name">{selectedFallacy.name}</span>
+                      {activeParticipant && (
+                        <span className="action-panel-context">
+                          {t("fallacyAgainst")} <strong>{activeParticipant.name}</strong>
+                        </span>
+                      )}
+                    </div>
                     <button className="action-panel-close" onClick={() => setSelectedFallacy(null)}>
                       <BsXLg />
                     </button>
@@ -183,25 +211,81 @@ export default function CriteriaSidebar({
                     <button
                       className="action-big-btn detected"
                       onClick={() => handleApplyFallacy("detected")}
-                      disabled={!activeParticipant}
+                      disabled={!activeParticipant || !selectedDetectorId}
                     >
                       <BsShieldFill />
                       <span>{t("detected")}</span>
-                      <strong>{FALLACY_SCORES.detected}</strong>
+                      <strong>+1 / -2</strong>
                     </button>
                   </div>
+                  {activeParticipant && detectorOptions.length > 0 && (
+                    <div className="detector-picker">
+                      <div className="detector-picker-label">{t("detectedBy")}</div>
+                      <div className="detector-picker-options">
+                        {detectorOptions.map((participant) => (
+                          <button
+                            key={participant.id}
+                            className={`detector-chip ${selectedDetectorId === participant.id ? "selected" : ""}`}
+                            onClick={() => setSelectedDetectorId((prev) => prev === participant.id ? null : participant.id)}
+                            type="button"
+                          >
+                            <span>{participant.name}</span>
+                            <strong>+1</strong>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {!activeParticipant && (
                     <div className="action-panel-warn">{t("noActiveTarget")}</div>
                   )}
+                  {activeParticipant && detectorOptions.length === 0 && (
+                    <div className="action-panel-warn">{t("needAnotherParticipant")}</div>
+                  )}
+                  {activeParticipant && detectorOptions.length > 0 && !selectedDetectorId && (
+                    <div className="action-panel-hint">{t("selectDetectorHint")}</div>
+                  )}
+                </div>
+              )}
+
+              {recentFallacyActions?.length > 0 && (
+                <div className="fallacy-history-panel">
+                  <div className="fallacy-history-header">{t("recentFallacyActions")}</div>
+                  <div className="fallacy-history-list">
+                    {recentFallacyActions.map((action) => (
+                      <div key={action.id} className="fallacy-history-item">
+                        <div className="fallacy-history-copy">
+                          <strong>{action.fallacyName}</strong>
+                          {action.type === "landed" ? (
+                            <span>{action.speakerName} {t("landedHistory")}</span>
+                          ) : (
+                            <span>{action.detectorName} {t("detectedHistory")} {action.speakerName}</span>
+                          )}
+                        </div>
+                        <button
+                          className="fallacy-history-undo"
+                          onClick={() => onUndoFallacyAction(action.id)}
+                          type="button"
+                        >
+                          <BsArrowCounterclockwise />
+                          <span>{t("undo")}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {/* Fallacy list */}
               <div className="fallacy-list">
                 {filteredFallacies.map(f => (
-                  <div key={f.id} className={`fallacy-item ${selectedFallacy?.id === f.id ? "selected" : ""}`}>
+                  <div
+                    key={f.id}
+                    className={`fallacy-item ${selectedFallacy?.id === f.id ? "selected" : ""}`}
+                    onClick={() => handleSelectFallacy(f)}
+                  >
                     {editingFallacyId === f.id ? (
-                      <div className="criterion-edit">
+                      <div className="criterion-edit" onClick={(e) => e.stopPropagation()}>
                         <Form.Control
                           size="sm"
                           value={editFallacyName}
@@ -232,19 +316,23 @@ export default function CriteriaSidebar({
                         </button>
                         <button
                           className="fallacy-select-btn"
-                          onClick={() => handleSelectFallacy(f)}
+                          onClick={(e) => { e.stopPropagation(); handleSelectFallacy(f) }}
                         >
                           {f.name}
                         </button>
                         <div className="fallacy-meta-actions">
-                          <button className="action-btn" onClick={() => {
+                          <button className="action-btn" onClick={(e) => {
+                            e.stopPropagation()
                             setEditingFallacyId(f.id)
                             setEditFallacyName(f.name)
                           }}><BsPencilFill /></button>
-                          <button className="action-btn danger" onClick={() => onRemoveFallacy(f.id)}><BsFillTrashFill /></button>
+                          <button className="action-btn danger" onClick={(e) => {
+                            e.stopPropagation()
+                            onRemoveFallacy(f.id)
+                          }}><BsFillTrashFill /></button>
                         </div>
                         {defPopoverId === f.id && (f.def || FALLACY_DEFS[f.name]) && (
-                          <div className="fallacy-def-popover">
+                          <div className="fallacy-def-popover" onClick={(e) => e.stopPropagation()}>
                             <div className="def-popover-header">
                               <strong>{f.name}</strong>
                               <button onClick={(e) => { e.stopPropagation(); setDefPopoverId(null) }}><BsXLg /></button>
