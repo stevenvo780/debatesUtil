@@ -31,6 +31,11 @@ const FALLACY_DEFS = {
   'Falacia naturalista': 'Derivar lo que debe ser a partir de lo que es.',
 }
 
+const FALLACY_SCORES = {
+  landed: 2,
+  detected: -1,
+}
+
 export default function CriteriaSidebar({
   t,
   criteria,
@@ -94,7 +99,7 @@ export default function CriteriaSidebar({
 
   const handleApplyFallacy = useCallback((type) => {
     if (!selectedFallacy || !activeParticipant) return
-    const points = type === "landed" ? 2 : -2
+    const points = FALLACY_SCORES[type]
     onApplyCriterion({ name: selectedFallacy.name, points })
     setFlashAction(type)
     setTimeout(() => {
@@ -173,7 +178,7 @@ export default function CriteriaSidebar({
                     >
                       <BsLightningFill />
                       <span>{t("landed")}</span>
-                      <strong>+2</strong>
+                      <strong>+{FALLACY_SCORES.landed}</strong>
                     </button>
                     <button
                       className="action-big-btn detected"
@@ -182,7 +187,7 @@ export default function CriteriaSidebar({
                     >
                       <BsShieldFill />
                       <span>{t("detected")}</span>
-                      <strong>−2</strong>
+                      <strong>{FALLACY_SCORES.detected}</strong>
                     </button>
                   </div>
                   {!activeParticipant && (
