@@ -148,3 +148,75 @@
 .bg-danger .penalties-wrapper:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* Points Section Styles */
+.points-section {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 0.75rem;
+}
+
+.bg-danger .points-section {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.points-controls {
+  margin-bottom: 0.5rem;
+}
+
+.points-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.points-btn:disabled {
+  opacity: 0.5;
+}
+
+.points-display {
+  font-size: 1.5rem;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+}
+
+.criteria-buttons {
+  gap: 0.25rem;
+}
+
+.criterion-btn {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+}
+
+.criterion-btn .badge {
+  font-size: 0.65rem;
+  margin-left: 0.25rem;
+}
+
+.bg-danger .criterion-btn {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.bg-danger .criterion-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .criterion-btn {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .points-display {
+    font-size: 1.3rem;
+  }
+}

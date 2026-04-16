@@ -1,6 +1,6 @@
 import React from "react"
 import { Row, Col, Card, Button } from "react-bootstrap"
-import { BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise, BsFillExclamationTriangleFill } from "react-icons/bs"
+import { BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise } from "react-icons/bs"
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -30,11 +30,10 @@ export default function ParticipantsSection({
   activeParticipantId,
   toggleTimer,
   editParticipant,
-  addPenalty,
   resetTime,
   removeParticipant,
   formatTime,
-  onReorder
+  onReorder,
 }) {
   const handleDragEnd = (event) => {
     const { active, over } = event
@@ -85,8 +84,11 @@ export default function ParticipantsSection({
                           <h3 className={`time-left ${textColorClass}`} style={{ fontSize: "1.8rem", textAlign: "center", marginBottom: "0.2rem" }}>
                             {formatTime(p.timeLeft)}
                           </h3>
-                          <div className="d-flex justify-content-center">
+                          <div className="d-flex justify-content-center gap-2">
                             <span className={"badge " + statusClass}>{isActive ? t("active") : t("paused")}</span>
+                            <span className={`badge ${p.penalties >= 0 ? "bg-success" : "bg-danger"}`}>
+                              {p.penalties >= 0 ? "+" : ""}{p.penalties} pts
+                            </span>
                           </div>
                         </div>
                         <div className="stats-grid small mb-2">
@@ -95,15 +97,7 @@ export default function ParticipantsSection({
                             <div>{t("totalUsed")}: {formatTime(p.totalUsed)}</div>
                           </div>
                         </div>
-                        <div className="actions d-flex justify-content-between align-items-center mt-3">
-                          <div className="penalties-group d-flex align-items-center">
-                            <div className="penalties-wrapper d-flex align-items-center gap-2">
-                              <span className={`penalties-count ${textColorClass}`}>{p.penalties}</span>
-                              <Button variant="link" className="icon-button p-0" onClick={(e) => addPenalty(p.id, e)} title={t("penalties")}>
-                                <BsFillExclamationTriangleFill style={{ color: inDanger ? "#ff8c8c" : "#dc3545", width: "1.4rem", height: "1.4rem", background: inDanger ? "rgba(255, 255, 255, 0.15)" : "transparent", borderRadius: "4px" }} />
-                              </Button>
-                            </div>
-                          </div>
+                        <div className="actions d-flex justify-content-end align-items-center mt-2">
                           <div className="control-buttons d-flex gap-2">
                             <Button variant="link" className="icon-button" onClick={(e) => resetTime(p.id, e)} title={t("reset")}>
                               <BsArrowCounterclockwise style={{ color: "#0dcaf0", width: "1.4rem", height: "1.4rem" }} />

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Container, Button } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
 import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
 import ParticipantForm, { generateShortId } from "./components/ParticipantForm"
 import StatsModal from "./components/StatsModal"
 import EditModal from "./components/EditModal"
+import CriteriaSidebar from "./components/CriteriaSidebar"
+import RulesModal from "./components/RulesModal"
 import { translations } from './translations'
 import {
   addParticipant,
@@ -22,7 +24,13 @@ import {
   resetStore,
   resetGame,
   setLanguage,
-  updateParticipantsOrder
+  updateParticipantsOrder,
+  addCriterion,
+  updateCriterion,
+  removeCriterion,
+  addFallacy,
+  updateFallacy,
+  removeFallacy
 } from "./store/debateSlice"
 import "./App.css"
 import { useTimerLogic } from './hooks/useTimerLogic'
@@ -43,6 +51,8 @@ export default function App() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showResetTimeModal, setShowResetTimeModal] = useState(false)
   const [selectedParticipantId, setSelectedParticipantId] = useState(null)
+  const [showRulesModal, setShowRulesModal] = useState(false)
+
 
   const t = (key) => translations[data.language][key]
   
@@ -124,13 +134,13 @@ export default function App() {
     dispatch(toggleTimer(id))
   }
 
-  function handleAddPenalty(id, e) {
-    e.stopPropagation()
-    const p = data.participants.find(x => x.id === id)
+  function handleApplyCriterionToActive(criterion) {
+    if (!data.activeParticipantId) return
+    const p = data.participants.find(x => x.id === data.activeParticipantId)
     if (!p) return
     dispatch(updateParticipant({
       ...p,
-      penalties: p.penalties + 1
+      penalties: p.penalties + criterion.points
     }))
   }
 
@@ -277,50 +287,72 @@ export default function App() {
       >
         {data.language === 'es' ? 'EN' : 'ES'}
       </Button>
-      <Container className="py-4">
-        <GlobalSessionCard
+      <Button
+        variant="outline-info"
+        size="sm"
+        onClick={() => setShowRulesModal(true)}
+        className="rules-toggle"
+      >
+        {t('showRules')}
+      </Button>
+      <div className="app-layout">
+        <div className="app-main">
+          <GlobalSessionCard
+            t={t}
+            globalSessionTitle={data.globalSessionTitle}
+            getGlobalSessionClock={getGlobalSessionClock}
+            toggleGlobalSession={handleToggleGlobalSession}
+            onTitleChange={(val) => dispatch(setGlobalTitle(val))}
+            activeTimer={activeTimer}
+            activeParticipant={activeParticipant}
+            activeTimeLeft={activeTimeLeft}
+          />
+          <ControlPanel
+            t={t}
+            round={data.round}
+            updateRoundValue={handleUpdateRound}
+            newRound={handleNewRound}
+            resetStorage={handleResetConfirmation}
+            showStats={showStats}
+            globalTimeInput={data.globalTimeInput}
+            setGlobalTimeInput={(val) => dispatch(setGlobalTimeInput(val))}
+            changeAllTime={handleChangeAllTime}
+          />
+          <ParticipantsSection
+            t={t}
+            participants={data.participants}
+            round={data.round}
+            activeParticipantId={data.activeParticipantId}
+            toggleTimer={handleToggleTimer}
+            editParticipant={handleEditParticipant}
+            resetTime={handleResetTimeConfirmation}
+            removeParticipant={handleDeleteConfirmation}
+            formatTime={formatTime}
+            onReorder={(newOrder) => dispatch(updateParticipantsOrder(newOrder))}
+          />
+          <ParticipantForm
+            t={t}
+            participantName={participantName}
+            setParticipantName={setParticipantName}
+            initialTime={data.initialTime}
+            setInitialTime={(val) => dispatch(setInitialTime(val))}
+            addParticipant={handleAddParticipant}
+          />
+        </div>
+        <CriteriaSidebar
           t={t}
-          globalSessionTitle={data.globalSessionTitle}
-          getGlobalSessionClock={getGlobalSessionClock}
-          toggleGlobalSession={handleToggleGlobalSession}
-          onTitleChange={(val) => dispatch(setGlobalTitle(val))}
-          activeTimer={activeTimer}
+          criteria={data.scoringCriteria}
+          fallacies={data.fallacies}
+          onAddCriterion={(c) => dispatch(addCriterion(c))}
+          onUpdateCriterion={(c) => dispatch(updateCriterion(c))}
+          onRemoveCriterion={(id) => dispatch(removeCriterion(id))}
+          onApplyCriterion={handleApplyCriterionToActive}
+          onAddFallacy={(f) => dispatch(addFallacy(f))}
+          onUpdateFallacy={(f) => dispatch(updateFallacy(f))}
+          onRemoveFallacy={(id) => dispatch(removeFallacy(id))}
           activeParticipant={activeParticipant}
-          activeTimeLeft={activeTimeLeft}
         />
-        <ControlPanel
-          t={t}
-          round={data.round}
-          updateRoundValue={handleUpdateRound}
-          newRound={handleNewRound}
-          resetStorage={handleResetConfirmation}
-          showStats={showStats}
-          globalTimeInput={data.globalTimeInput}
-          setGlobalTimeInput={(val) => dispatch(setGlobalTimeInput(val))}
-          changeAllTime={handleChangeAllTime}
-        />
-        <ParticipantsSection
-          t={t}
-          participants={data.participants}
-          round={data.round}
-          activeParticipantId={data.activeParticipantId}
-          toggleTimer={handleToggleTimer}
-          editParticipant={handleEditParticipant}
-          addPenalty={handleAddPenalty}
-          resetTime={handleResetTimeConfirmation}
-          removeParticipant={handleDeleteConfirmation}
-          formatTime={formatTime}
-          onReorder={(newOrder) => dispatch(updateParticipantsOrder(newOrder))}
-        />
-        <ParticipantForm
-          t={t}
-          participantName={participantName}
-          setParticipantName={setParticipantName}
-          initialTime={data.initialTime}
-          setInitialTime={(val) => dispatch(setInitialTime(val))}
-          addParticipant={handleAddParticipant}
-        />
-      </Container>
+      </div>
       <StatsModal
         t={t}
         show={showStatsModal}
@@ -352,6 +384,12 @@ export default function App() {
         onConfirmResetTime={confirmResetTime}
         onResetGame={handleResetGame}
         onResetAll={handleResetAll}
+      />
+
+      <RulesModal
+        show={showRulesModal}
+        onHide={() => setShowRulesModal(false)}
+        language={data.language}
       />
     </>
   )
