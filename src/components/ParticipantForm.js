@@ -1,45 +1,47 @@
 import React from "react"
-import { Row, Col, Button, Form } from "react-bootstrap"
+import { Button, Form, InputGroup } from "react-bootstrap"
+import { BsPersonPlusFill, BsClockFill } from "react-icons/bs"
 
 export const generateShortId = () => {
   return Math.random().toString(36).substring(2, 6).toUpperCase();
 }
 
 export default function ParticipantForm({
-  t,  // añadir t a los props
+  t,
   participantName,
   setParticipantName,
   initialTime,
   setInitialTime,
   addParticipant
 }) {
+  const handleKey = (e) => { if (e.key === 'Enter') addParticipant() }
   return (
     <div className="section-box">
-      <h2 className="mb-3">{t('title')}</h2>
-      <Row className="g-3">
-        <Col sm={6} md={4}>
-          <Form.Label>{t('participantName')}</Form.Label>
+      <div className="add-participant-row">
+        <InputGroup>
+          <InputGroup.Text><BsPersonPlusFill style={{ opacity: 0.7 }} /></InputGroup.Text>
           <Form.Control
             type="text"
+            placeholder={t('participantName')}
             value={participantName}
             onChange={(e) => setParticipantName(e.target.value)}
+            onKeyDown={handleKey}
           />
-        </Col>
-        <Col sm={6} md={4}>
-          <Form.Label>{t('initialTime')}</Form.Label>
+        </InputGroup>
+        <InputGroup style={{ maxWidth: "160px" }}>
+          <InputGroup.Text><BsClockFill style={{ opacity: 0.7 }} /></InputGroup.Text>
           <Form.Control
             type="number"
             min="1"
             value={initialTime}
             onChange={(e) => setInitialTime(e.target.value)}
+            onKeyDown={handleKey}
           />
-        </Col>
-        <Col sm={6} md={4} className="d-flex align-items-end">
-          <Button variant="primary" className="w-100" onClick={addParticipant}>
-            {t('addParticipant')}
-          </Button>
-        </Col>
-      </Row>
+        </InputGroup>
+        <Button variant="primary" onClick={addParticipant}>
+          <BsPersonPlusFill style={{ marginRight: "0.4rem" }} />{t('addParticipant')}
+        </Button>
+      </div>
     </div>
   )
 }

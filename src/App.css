@@ -718,3 +718,163 @@ select:focus {
 .modal-body .table td {
   background-color: var(--card-color);
 }
+/* ───────────────────────────────────────────
+   GlobalSessionCard
+   ─────────────────────────────────────────── */
+.global-card {
+  padding: 0.75rem 1rem;
+}
+
+.global-title-input {
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: var(--font-color) !important;
+  padding: 0 0 0.5rem 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.global-title-input::placeholder {
+  opacity: 0.35;
+}
+
+.global-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.global-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.gstat-icon {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.gstat-value {
+  font-family: monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.global-active-participant {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.active-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--font-color);
+}
+
+.active-name.muted {
+  opacity: 0.35;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.timeleft-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-family: monospace;
+  letter-spacing: 0.03em;
+  color: var(--info-color);
+}
+
+/* ───────────────────────────────────────────
+   ControlPanel
+   ─────────────────────────────────────────── */
+.control-panel {
+  padding: 0.75rem 1rem;
+}
+
+.control-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.ctrl-icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.ctrl-input {
+  width: 68px !important;
+  text-align: center;
+}
+
+.ctrl-time-group {
+  min-width: 140px;
+}
+
+.ctrl-btn {
+  padding: 0.375rem 0.6rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-actions {
+  margin-left: auto;
+  gap: 0.5rem;
+}
+
+.ctrl-action-btn {
+  display: flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem !important;
+}
+
+.ctrl-action-btn span {
+  font-size: 0.85rem;
+}
+
+/* ───────────────────────────────────────────
+   ParticipantForm — add-row
+   ─────────────────────────────────────────── */
+.add-participant-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.add-participant-row .input-group {
+  flex: 1 1 180px;
+  min-width: 150px;
+}
+
+@media (max-width: 576px) {
+  .global-info-bar { gap: 0.75rem; }
+  .global-active-participant { margin-left: 0; }
+  .timeleft-value { font-size: 1.7rem; }
+  .control-actions { margin-left: 0; }
+  .ctrl-time-group { min-width: 110px; }
+}

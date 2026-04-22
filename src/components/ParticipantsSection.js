@@ -1,6 +1,12 @@
 import React from "react"
 import { Row, Col, Card, Button } from "react-bootstrap"
-import { BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise, BsDashLg, BsPlusLg } from "react-icons/bs"
+import {
+  BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise,
+  BsDashLg, BsPlusLg,
+  BsClockFill, BsHourglassSplit,
+  BsPlayFill, BsPauseFill,
+  BsTrophyFill, BsPersonFill
+} from "react-icons/bs"
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -53,7 +59,6 @@ export default function ParticipantsSection({
             {participants.map(p => {
               const roundTime = p.roundTimes[round] ? p.roundTimes[round] : 0
               const isActive = activeParticipantId === p.id
-              const statusClass = isActive ? "bg-success" : "bg-secondary"
               const inDanger = p.timeLeft <= 0
               const dangerClass = inDanger ? "bg-danger" : ""
               const textColorClass = p.timeLeft <= 15 ? "text-white" : ""
@@ -66,81 +71,77 @@ export default function ParticipantsSection({
                 <Col key={p.id} xs={12} sm={6} md={3} lg={3}>
                   <SortableItem id={p.id} onClick={() => toggleTimer(p.id)}>
                     <Card
-                      className="mb-3 h-100 participant-card"
-                      style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.1)", transition: "all 0.2s ease-in-out" }}
+                      className={`mb-3 h-100 participant-card${isActive ? " card-active" : ""}`}
+                      style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.15)", transition: "all 0.2s ease-in-out" }}
                       role="button"
                       tabIndex={0}>
-                      <Card.Body style={animationStyle} className={`${dangerClass} ${textColorClass}`}>
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <Card.Title style={{ fontSize: "1.2rem", margin: 0 }}>
-                            {p.name}
-                          </Card.Title>
-                          <div className="d-flex gap-2">
-                            <Button variant="link" className="icon-button" onClick={(e) => editParticipant(p.id, e)} aria-label="Editar participante">
-                              <BsFillPencilFill style={{ color: "#6c757d", width: "2rem", height: "2rem" }} />
-                            </Button>
+                      <Card.Body style={animationStyle} className={`${dangerClass} ${textColorClass} participant-body`}>
+
+                        {/* ── Cabecera: nombre + editar ── */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", minWidth: 0 }}>
+                            <BsPersonFill style={{ opacity: 0.5, flexShrink: 0, width: "0.85rem", height: "0.85rem" }} />
+                            <span className="participant-name">{p.name}</span>
                           </div>
+                          <Button variant="link" className="icon-button p-1" onClick={(e) => editParticipant(p.id, e)} aria-label="Editar participante">
+                            <BsFillPencilFill style={{ color: "#6c757d", width: "1rem", height: "1rem" }} />
+                          </Button>
                         </div>
-                        <div className="time-info mb-2">
-                          <h3 className={`time-left ${textColorClass}`} style={{ fontSize: "1.8rem", textAlign: "center", marginBottom: "0.2rem" }}>
-                            {formatTime(p.timeLeft)}
-                          </h3>
-                          <div className="d-flex justify-content-center gap-2">
-                            <span className={"badge " + statusClass}>{isActive ? t("active") : t("paused")}</span>
-                          </div>
+
+                        {/* ── Tiempo ── */}
+                        <div className="timer-block">
+                          <span className={`time-left ${textColorClass}`}>{formatTime(p.timeLeft)}</span>
+                          <span className={`status-pill ${isActive ? "pill-active" : "pill-paused"}`}>
+                            {isActive ? <BsPlayFill /> : <BsPauseFill />}
+                          </span>
                         </div>
-                        <div className="points-section mb-3">
-                          <div className={`score-label ${textColorClass}`}>{t("score")}</div>
-                          <div className={`points-display ${inDanger ? "on-danger" : p.penalties > 0 ? "positive" : p.penalties < 0 ? "negative" : ""}`}>
-                            {p.penalties >= 0 ? "+" : ""}{p.penalties}
+
+                        {/* ── Puntaje: [-] [🏆 score] [+] ── */}
+                        <div style={{ display: "flex", flexDirection: "row", alignItems: "stretch", gap: "0.45rem", width: "100%", margin: "0.65rem 0" }}>
+                          <Button
+                            variant={inDanger ? "outline-light" : "outline-danger"}
+                            style={{ flex: 1, minWidth: 0, height: "48px", borderRadius: "12px", padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                            onClick={(e) => { e.stopPropagation(); adjustScore && adjustScore(p.id, -1) }}
+                            aria-label={`${t("decreasePoints")}: ${p.name}`}>
+                            <BsDashLg style={{ width: "1.1rem", height: "1.1rem" }} />
+                          </Button>
+                          <div style={{ flex: "0 0 56px", minWidth: "56px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1px" }}>
+                            <BsTrophyFill style={{ width: "0.6rem", height: "0.6rem", opacity: 0.45, color: "#DAA520" }} />
+                            <span className={`points-display ${inDanger ? "on-danger" : p.penalties > 0 ? "positive" : p.penalties < 0 ? "negative" : ""}`}>
+                              {p.penalties >= 0 ? "+" : ""}{p.penalties}
+                            </span>
                           </div>
-                          <div className="points-controls">
-                            <Button
-                              variant={inDanger ? "outline-light" : "outline-danger"}
-                              className="points-btn"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                adjustScore && adjustScore(p.id, -1)
-                              }}
-                              title={t("decreasePoints")}
-                              aria-label={`${t("decreasePoints")}: ${p.name}`}>
-                              <span className="points-btn-inner">
-                                <BsDashLg />
-                                <span className="points-btn-value">-1</span>
-                              </span>
-                            </Button>
-                            <Button
-                              variant={inDanger ? "outline-light" : "outline-success"}
-                              className="points-btn"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                adjustScore && adjustScore(p.id, 1)
-                              }}
-                              title={t("increasePoints")}
-                              aria-label={`${t("increasePoints")}: ${p.name}`}>
-                              <span className="points-btn-inner">
-                                <BsPlusLg />
-                                <span className="points-btn-value">+1</span>
-                              </span>
-                            </Button>
-                          </div>
+                          <Button
+                            variant={inDanger ? "outline-light" : "outline-success"}
+                            style={{ flex: 1, minWidth: 0, height: "48px", borderRadius: "12px", padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                            onClick={(e) => { e.stopPropagation(); adjustScore && adjustScore(p.id, 1) }}
+                            aria-label={`${t("increasePoints")}: ${p.name}`}>
+                            <BsPlusLg style={{ width: "1.1rem", height: "1.1rem" }} />
+                          </Button>
                         </div>
-                        <div className="stats-grid small mb-2">
-                          <div className={textColorClass}>
-                            <div>{t("roundTime")}: {formatTime(roundTime)}</div>
-                            <div>{t("totalUsed")}: {formatTime(p.totalUsed)}</div>
-                          </div>
+
+                        {/* ── Stats ── */}
+                        <div className="stats-row">
+                          <span className={`stat-item ${textColorClass}`}>
+                            <BsClockFill className="stat-icon" />
+                            {formatTime(roundTime)}
+                          </span>
+                          <span className={`stat-item ${textColorClass}`}>
+                            <BsHourglassSplit className="stat-icon" />
+                            {formatTime(p.totalUsed)}
+                          </span>
                         </div>
-                        <div className="actions d-flex justify-content-end align-items-center mt-2">
-                          <div className="control-buttons d-flex gap-2">
-                            <Button variant="link" className="icon-button" onClick={(e) => resetTime(p.id, e)} title={t("reset")}>
-                              <BsArrowCounterclockwise style={{ color: "#0dcaf0", width: "1.4rem", height: "1.4rem" }} />
-                            </Button>
-                            <Button variant="link" className="icon-button" onClick={(e) => removeParticipant(p.id, e)} title={t("remove")}>
-                              <BsFillTrashFill style={{ color: "#dc3545", width: "1.4rem", height: "1.4rem" }} />
-                            </Button>
-                          </div>
+
+                        {/* ── Acciones ── */}
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.25rem", marginTop: "0.5rem" }}>
+                          <Button variant="link" className="icon-button p-1" onClick={(e) => resetTime(p.id, e)} title={t("reset")}>
+                            <BsArrowCounterclockwise style={{ color: "#0dcaf0", width: "1.25rem", height: "1.25rem" }} />
+                          </Button>
+                          <Button variant="link" className="icon-button p-1" onClick={(e) => removeParticipant(p.id, e)} title={t("remove")}>
+                            <BsFillTrashFill style={{ color: "#dc3545", width: "1.25rem", height: "1.25rem" }} />
+                          </Button>
                         </div>
+
                       </Card.Body>
                     </Card>
                   </SortableItem>

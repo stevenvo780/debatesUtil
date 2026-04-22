@@ -1,5 +1,6 @@
 import React from "react"
-import { Row, Col, Button, Form, InputGroup } from "react-bootstrap"
+import { Button, Form, InputGroup } from "react-bootstrap"
+import { BsArrowRepeat, BsClockHistory, BsBarChartFill, BsSkipForwardFill, BsTrash3Fill } from "react-icons/bs"
 
 export default function ControlPanel({
   t,
@@ -13,28 +14,33 @@ export default function ControlPanel({
   changeAllTime
 }) {
   return (
-    <div className="section-box">
-      <Row className="g-3">
-        <Col sm={6} md={2} className="d-flex align-items-center">
-          <Form.Label className="me-2 mb-0">{t('round')}</Form.Label>
+    <div className="section-box control-panel">
+      <div className="control-row">
+        {/* Ronda */}
+        <div className="control-group">
+          <BsArrowRepeat className="ctrl-icon" />
           <Form.Control
             type="number"
-            style={{ width: "80px" }}
+            className="ctrl-input"
             min="1"
             value={round}
             onChange={(e) => updateRoundValue(e.target.value)}
           />
-        </Col>
-        <Col sm={6} md={4}>
-          <InputGroup>
+        </div>
+
+        {/* Tiempo */}
+        <div className="control-group">
+          <BsClockHistory className="ctrl-icon" />
+          <InputGroup className="ctrl-time-group">
             <Form.Control
               type="number"
               placeholder={t('minutes')}
               min="0"
               value={Math.floor(globalTimeInput)}
               onChange={(e) => setGlobalTimeInput(Number(e.target.value) + (globalTimeInput % 1))}
-              style={{textAlign: 'center'}}
+              style={{ textAlign: 'center' }}
             />
+            <InputGroup.Text style={{ padding: "0 0.35rem", fontWeight: 700, opacity: 0.7 }}>:</InputGroup.Text>
             <Form.Control
               type="number"
               placeholder={t('seconds')}
@@ -43,33 +49,30 @@ export default function ControlPanel({
               value={Math.round((globalTimeInput % 1) * 60)}
               onChange={(e) => {
                 const secs = Number(e.target.value)
-                if (secs >= 0 && secs <= 59) {
-                  setGlobalTimeInput(Math.floor(globalTimeInput) + (secs / 60))
-                }
+                if (secs >= 0 && secs <= 59) setGlobalTimeInput(Math.floor(globalTimeInput) + (secs / 60))
               }}
-              style={{textAlign: 'center'}}
+              style={{ textAlign: 'center' }}
             />
-            <Button variant="warning" onClick={changeAllTime}>
-              {t('changeTime')}
-            </Button>
           </InputGroup>
-        </Col>
-        <Col sm={6} md={2}>
-          <Button variant="secondary" className="w-100" onClick={newRound}>
-            {t('newRound')}
+          <Button variant="warning" className="ctrl-btn" onClick={changeAllTime} title={t('changeTime')}>
+            <BsClockHistory style={{ width: "1rem", height: "1rem" }} />
           </Button>
-        </Col>
-        <Col sm={6} md={2}>
-          <Button variant="danger" className="w-100" onClick={resetStorage}>
-            {t('resetAll')}
+        </div>
+
+        {/* Acciones */}
+        <div className="control-group control-actions">
+          <Button variant="secondary" className="ctrl-action-btn" onClick={newRound} title={t('newRound')}>
+            <BsSkipForwardFill style={{ width: "1rem", height: "1rem" }} />
+            <span>{t('newRound')}</span>
           </Button>
-        </Col>
-        <Col sm={6} md={2}>
-          <Button variant="info" className="w-100" onClick={showStats}>
-            {t('showStats')}
+          <Button variant="danger" className="ctrl-action-btn" onClick={resetStorage} title={t('resetAll')}>
+            <BsTrash3Fill style={{ width: "1rem", height: "1rem" }} />
           </Button>
-        </Col>
-      </Row>
+          <Button variant="info" className="ctrl-action-btn" onClick={showStats} title={t('showStats')}>
+            <BsBarChartFill style={{ width: "1rem", height: "1rem" }} />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
