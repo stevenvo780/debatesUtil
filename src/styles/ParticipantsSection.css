@@ -152,37 +152,82 @@
 /* Points Section Styles */
 .points-section {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding-top: 0.75rem;
+  padding-top: 0.8rem;
 }
 
 .bg-danger .points-section {
   border-top-color: rgba(255, 255, 255, 0.2);
 }
 
+.score-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  opacity: 0.75;
+  margin-bottom: 0.35rem;
+}
+
 .points-controls {
-  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-bottom: 0;
+  width: 100%;
+  gap: 0.6rem;
 }
 
 .points-btn {
-  width: 32px;
-  height: 32px;
-  padding: 0;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.25rem 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 14px;
   font-weight: bold;
+}
+
+.points-btn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.points-btn svg {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
 }
 
 .points-btn:disabled {
   opacity: 0.5;
 }
 
-.points-display {
-  font-size: 1.5rem;
+.points-btn-value {
+  font-size: 1rem;
   font-weight: 700;
-  min-width: 40px;
+  line-height: 1;
+}
+
+.points-display {
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 1;
   text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.points-display.positive {
+  color: #73d08a;
+}
+
+.points-display.negative {
+  color: #ff8c8c;
+}
+
+.points-display.on-danger {
+  color: #ffffff;
 }
 
 .criteria-buttons {
@@ -214,6 +259,10 @@
   .criterion-btn {
     font-size: 0.7rem;
     padding: 0.15rem 0.4rem;
+  }
+
+  .points-btn {
+    min-height: 56px;
   }
 
   .points-display {

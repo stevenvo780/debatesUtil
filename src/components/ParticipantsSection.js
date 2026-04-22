@@ -1,6 +1,6 @@
 import React from "react"
 import { Row, Col, Card, Button } from "react-bootstrap"
-import { BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise } from "react-icons/bs"
+import { BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise, BsDashLg, BsPlusLg } from "react-icons/bs"
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -29,6 +29,7 @@ export default function ParticipantsSection({
   round,
   activeParticipantId,
   toggleTimer,
+  adjustScore,
   editParticipant,
   resetTime,
   removeParticipant,
@@ -86,9 +87,42 @@ export default function ParticipantsSection({
                           </h3>
                           <div className="d-flex justify-content-center gap-2">
                             <span className={"badge " + statusClass}>{isActive ? t("active") : t("paused")}</span>
-                            <span className={`badge ${p.penalties >= 0 ? "bg-success" : "bg-danger"}`}>
-                              {p.penalties >= 0 ? "+" : ""}{p.penalties} pts
-                            </span>
+                          </div>
+                        </div>
+                        <div className="points-section mb-3">
+                          <div className={`score-label ${textColorClass}`}>{t("score")}</div>
+                          <div className={`points-display ${inDanger ? "on-danger" : p.penalties > 0 ? "positive" : p.penalties < 0 ? "negative" : ""}`}>
+                            {p.penalties >= 0 ? "+" : ""}{p.penalties}
+                          </div>
+                          <div className="points-controls">
+                            <Button
+                              variant={inDanger ? "outline-light" : "outline-danger"}
+                              className="points-btn"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                adjustScore && adjustScore(p.id, -1)
+                              }}
+                              title={t("decreasePoints")}
+                              aria-label={`${t("decreasePoints")}: ${p.name}`}>
+                              <span className="points-btn-inner">
+                                <BsDashLg />
+                                <span className="points-btn-value">-1</span>
+                              </span>
+                            </Button>
+                            <Button
+                              variant={inDanger ? "outline-light" : "outline-success"}
+                              className="points-btn"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                adjustScore && adjustScore(p.id, 1)
+                              }}
+                              title={t("increasePoints")}
+                              aria-label={`${t("increasePoints")}: ${p.name}`}>
+                              <span className="points-btn-inner">
+                                <BsPlusLg />
+                                <span className="points-btn-value">+1</span>
+                              </span>
+                            </Button>
                           </div>
                         </div>
                         <div className="stats-grid small mb-2">

@@ -1,6 +1,5 @@
 import React from "react"
-import { Modal, Button, Form, InputGroup } from "react-bootstrap"
-import { BsFillPlusCircleFill, BsFillDashCircleFill } from 'react-icons/bs'
+import { Modal, Button, Form } from "react-bootstrap"
 
 export default function EditModal({
   t,
@@ -11,9 +10,7 @@ export default function EditModal({
   editParticipantTime,
   setEditParticipantName,
   setEditParticipantTime,
-  saveParticipantChanges,
-  currentPenalties,
-  onPenaltyChange
+  saveParticipantChanges
 }) {
   return (
     <Modal show={show} onHide={onHide}>
@@ -38,27 +35,6 @@ export default function EditModal({
             value={editParticipantTime}
             onChange={(e) => setEditParticipantTime(e.target.value)}
           />
-        </div>
-        <div className="mb-3">
-          <Form.Label>{t('penalties')}</Form.Label>
-          <InputGroup>
-            <Button 
-              variant="outline-danger"
-              onClick={() => onPenaltyChange(-1)}
-              disabled={currentPenalties <= 0}>
-              <BsFillDashCircleFill />
-            </Button>
-            <Form.Control
-              value={currentPenalties}
-              readOnly
-              style={{textAlign: 'center'}}
-            />
-            <Button 
-              variant="outline-success"
-              onClick={() => onPenaltyChange(1)}>
-              <BsFillPlusCircleFill />
-            </Button>
-          </InputGroup>
         </div>
       </Modal.Body>
       <Modal.Footer>

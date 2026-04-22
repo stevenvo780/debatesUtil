@@ -8,7 +8,6 @@ import ParticipantsSection from "./components/ParticipantsSection"
 import ParticipantForm, { generateShortId } from "./components/ParticipantForm"
 import StatsModal from "./components/StatsModal"
 import EditModal from "./components/EditModal"
-import CriteriaSidebar from "./components/CriteriaSidebar"
 import RulesModal from "./components/RulesModal"
 import { translations } from './translations'
 import {
@@ -24,13 +23,7 @@ import {
   resetStore,
   resetGame,
   setLanguage,
-  updateParticipantsOrder,
-  addCriterion,
-  updateCriterion,
-  removeCriterion,
-  addFallacy,
-  updateFallacy,
-  removeFallacy
+  updateParticipantsOrder
 } from "./store/debateSlice"
 import "./App.css"
 import { useTimerLogic } from './hooks/useTimerLogic'
@@ -46,13 +39,11 @@ export default function App() {
   const [editParticipantName, setEditParticipantName] = useState("")
   const [editParticipantTime, setEditParticipantTime] = useState(1)
   const [statsContent, setStatsContent] = useState("")
-  const [editParticipantPenalties, setEditParticipantPenalties] = useState(0)
   const [showResetModal, setShowResetModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showResetTimeModal, setShowResetTimeModal] = useState(false)
   const [selectedParticipantId, setSelectedParticipantId] = useState(null)
   const [showRulesModal, setShowRulesModal] = useState(false)
-  const [recentFallacyActions, setRecentFallacyActions] = useState([])
 
 
   const t = (key) => translations[data.language][key]
@@ -135,77 +126,13 @@ export default function App() {
     dispatch(toggleTimer(id))
   }
 
-  function handleApplyCriterionToActive(criterion) {
-    if (!data.activeParticipantId) return
-    const p = data.participants.find(x => x.id === data.activeParticipantId)
-    if (!p) return
-    dispatch(updateParticipant({
-      ...p,
-      penalties: p.penalties + criterion.points
-    }))
-  }
-
-  function applyParticipantDelta(participantId, delta) {
+  function handleAdjustScore(participantId, delta) {
     const participant = data.participants.find((item) => item.id === participantId)
-    if (!participant) return null
+    if (!participant) return
     dispatch(updateParticipant({
       ...participant,
       penalties: participant.penalties + delta,
     }))
-    return participant
-  }
-
-  function handleApplyFallacyAction(action) {
-    if (!data.activeParticipantId) return
-
-    const active = data.participants.find((item) => item.id === data.activeParticipantId)
-    if (!active) return
-
-    const changes = []
-
-    if (action.type === "landed") {
-      const updated = applyParticipantDelta(active.id, 2)
-      if (!updated) return
-      changes.push({ participantId: active.id, delta: 2, name: active.name })
-    }
-
-    if (action.type === "detected") {
-      if (!action.detectorId || action.detectorId === active.id) return
-      const detector = data.participants.find((item) => item.id === action.detectorId)
-      if (!detector) return
-
-      const updatedDetector = applyParticipantDelta(detector.id, 1)
-      const updatedActive = applyParticipantDelta(active.id, -2)
-      if (!updatedDetector || !updatedActive) return
-
-      changes.push({ participantId: detector.id, delta: 1, name: detector.name })
-      changes.push({ participantId: active.id, delta: -2, name: active.name })
-    }
-
-    if (!changes.length) return
-
-    setRecentFallacyActions((prev) => [
-      {
-        id: Date.now(),
-        fallacyName: action.fallacyName,
-        type: action.type,
-        speakerName: active.name,
-        detectorName: action.detectorName || null,
-        changes,
-      },
-      ...prev,
-    ].slice(0, 6))
-  }
-
-  function handleUndoFallacyAction(actionId) {
-    const action = recentFallacyActions.find((item) => item.id === actionId)
-    if (!action) return
-
-    action.changes.forEach((change) => {
-      applyParticipantDelta(change.participantId, -change.delta)
-    })
-
-    setRecentFallacyActions((prev) => prev.filter((item) => item.id !== actionId))
   }
 
   function handleSaveParticipantChanges() {
@@ -215,8 +142,7 @@ export default function App() {
       ...p,
       name: editParticipantName.trim(),
       initialTime: parseFloat(editParticipantTime),
-      timeLeft: parseFloat(editParticipantTime) * 60,
-      penalties: editParticipantPenalties
+      timeLeft: parseFloat(editParticipantTime) * 60
     }))
     setShowEditModal(false)
   }
@@ -261,12 +187,7 @@ export default function App() {
     setEditParticipantId(p.id)
     setEditParticipantName(p.name)
     setEditParticipantTime(p.initialTime)
-    setEditParticipantPenalties(p.penalties)
     setShowEditModal(true)
-  }
-
-  function handlePenaltyChange(change) {
-    setEditParticipantPenalties(prev => Math.max(0, prev + change))
   }
 
   function handleChangeAllTime() {
@@ -289,7 +210,7 @@ export default function App() {
         `<p><strong>${p.name}</strong><br/>` +
         `${t('totalUsed')}: ${formatTime(p.totalUsed)}<br/>` +
         `${t('participant')}: ${participantInterventions.length}<br/>` +
-        `${t('penalties')}: ${p.penalties}</p>`
+        `${t('score')}: ${p.penalties}</p>`
     })
     setStatsContent(content)
     setShowStatsModal(true)
@@ -388,6 +309,7 @@ export default function App() {
             round={data.round}
             activeParticipantId={data.activeParticipantId}
             toggleTimer={handleToggleTimer}
+            adjustScore={handleAdjustScore}
             editParticipant={handleEditParticipant}
             resetTime={handleResetTimeConfirmation}
             removeParticipant={handleDeleteConfirmation}
@@ -403,23 +325,6 @@ export default function App() {
             addParticipant={handleAddParticipant}
           />
         </div>
-        <CriteriaSidebar
-          t={t}
-          criteria={data.scoringCriteria}
-          fallacies={data.fallacies}
-          participants={data.participants}
-          onAddCriterion={(c) => dispatch(addCriterion(c))}
-          onUpdateCriterion={(c) => dispatch(updateCriterion(c))}
-          onRemoveCriterion={(id) => dispatch(removeCriterion(id))}
-          onApplyCriterion={handleApplyCriterionToActive}
-          onApplyFallacyAction={handleApplyFallacyAction}
-          onAddFallacy={(f) => dispatch(addFallacy(f))}
-          onUpdateFallacy={(f) => dispatch(updateFallacy(f))}
-          onRemoveFallacy={(id) => dispatch(removeFallacy(id))}
-          activeParticipant={activeParticipant}
-          recentFallacyActions={recentFallacyActions}
-          onUndoFallacyAction={handleUndoFallacyAction}
-        />
       </div>
       <StatsModal
         t={t}
@@ -437,8 +342,6 @@ export default function App() {
         setEditParticipantName={setEditParticipantName}
         setEditParticipantTime={setEditParticipantTime}
         saveParticipantChanges={handleSaveParticipantChanges}
-        currentPenalties={editParticipantPenalties}
-        onPenaltyChange={handlePenaltyChange}
       />
       <ConfirmationModals
         t={t}
