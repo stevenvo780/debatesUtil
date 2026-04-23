@@ -61,7 +61,7 @@ function SortableItem({ id, onClick, children }) {
   const style = { transform: CSS.Transform.toString(transform), transition, width: "100%" }
 
   const handleClick = (e) => {
-    if (e.target.closest("button, a, .drag-handle, .dropdown-menu, .dropdown-toggle")) return
+    if (e.target.closest("button, a, .dropdown-menu, .dropdown-toggle")) return
     if (!isDragging) onClick && onClick(e)
   }
 
@@ -101,8 +101,8 @@ export default function ParticipantsSection({
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 140,
-        tolerance: 10,
+        delay: 180,
+        tolerance: 8,
       },
     }),
     useSensor(KeyboardSensor, {
