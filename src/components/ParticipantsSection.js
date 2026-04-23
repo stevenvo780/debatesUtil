@@ -1,14 +1,29 @@
 import React from "react"
-import { Row, Col, Card, Button } from "react-bootstrap"
+import { Row, Col, Card, Button, Dropdown } from "react-bootstrap"
 import {
   BsFillTrashFill, BsFillPencilFill, BsArrowCounterclockwise,
   BsDashLg, BsPlusLg,
   BsClockFill, BsHourglassSplit,
   BsPlayFill, BsPauseFill,
-  BsTrophyFill
+  BsThreeDots,
+  BsTrophyFill,
 } from "react-icons/bs"
-import { DndContext, closestCenter } from "@dnd-kit/core"
-import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
+import {
+  DndContext,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import "../styles/ParticipantsSection.css"
 import { getParticipantVisualMap } from "../participantVisuals"
@@ -42,10 +57,11 @@ function getParticipantsShellClass(count) {
 }
 
 function SortableItem({ id, onClick, children }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const { attributes, listeners, setActivatorNodeRef, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const style = { transform: CSS.Transform.toString(transform), transition, width: "100%" }
+
   const handleClick = (e) => {
-    if (e.target.closest("button, a, .drag-handle")) return
+    if (e.target.closest("button, a, .drag-handle, .dropdown-menu, .dropdown-toggle")) return
     if (!isDragging) onClick && onClick(e)
   }
 
@@ -56,7 +72,7 @@ function SortableItem({ id, onClick, children }) {
 
   return (
     <div ref={setNodeRef} style={style} onClick={handleClick}>
-      {children({ dragHandleProps })}
+      {children({ dragHandleProps, setDragHandleRef: setActivatorNodeRef })}
     </div>
   )
 }
@@ -77,6 +93,22 @@ export default function ParticipantsSection({
   const participantColProps = getParticipantColProps(participants.length)
   const participantsShellClass = getParticipantsShellClass(participants.length)
   const participantVisualMap = getParticipantVisualMap(participants)
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 6,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 140,
+        tolerance: 10,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const handleDragEnd = (event) => {
     const { active, over } = event
@@ -87,8 +119,9 @@ export default function ParticipantsSection({
     const newItems = arrayMove(participants, oldIndex, newIndex)
     onReorder && onReorder(newItems)
   }
+
   return (
-    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
       <SortableContext items={participants.map(p => p.id)} strategy={rectSortingStrategy}>
         <div className={`section-box ${participantsShellClass}`}>
           <Row className="g-2 justify-content-center participants-grid">
@@ -101,23 +134,25 @@ export default function ParticipantsSection({
               const dangerClass = inDanger ? "bg-danger" : ""
               const textColorClass = p.timeLeft <= 15 ? "text-white" : ""
               let animationStyle = {}
+
               if (!inDanger && p.timeLeft <= 30) {
                 const offset = 30 - p.timeLeft
                 animationStyle = { animation: `dyingGradient 30s linear -${offset}s forwards` }
               }
+
               return (
                 <Col key={p.id} {...participantColProps}>
                   <SortableItem id={p.id} onClick={() => toggleTimer(p.id)}>
-                    {({ dragHandleProps }) => (
+                    {({ dragHandleProps, setDragHandleRef }) => (
                       <Card
                         className={`h-100 participant-card${isActive ? " card-active" : ""}`}
                         style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.15)", transition: "all 0.2s ease-in-out" }}
                         role="button"
-                        tabIndex={0}>
+                        tabIndex={0}
+                      >
                         <Card.Body style={animationStyle} className={`${dangerClass} ${textColorClass} participant-body`}>
-
                           <div className="participant-header">
-                            <div className="participant-headline drag-handle" {...dragHandleProps} title={p.name} aria-label={p.name}>
+                            <div ref={setDragHandleRef} className="participant-headline drag-handle" {...dragHandleProps} title={p.name} aria-label={p.name}>
                               <span
                                 className="participant-crest"
                                 style={{
@@ -131,15 +166,37 @@ export default function ParticipantsSection({
                             </div>
 
                             <div className="participant-header-actions">
-                              <Button variant="link" className="icon-button p-1" onClick={(e) => editParticipant(p.id, e)} title={t("editParticipant")} aria-label={t("editParticipant")}>
-                                <BsFillPencilFill style={{ color: "#6c757d", width: "0.95rem", height: "0.95rem" }} />
-                              </Button>
-                              <Button variant="link" className="icon-button p-1" onClick={(e) => resetTime(p.id, e)} title={t("reset")} aria-label={t("reset")}>
+                              <Button
+                                variant="link"
+                                className="icon-button participant-reset-button p-1"
+                                onClick={(e) => resetTime(p.id, e)}
+                                title={t("reset")}
+                                aria-label={t("reset")}
+                              >
                                 <BsArrowCounterclockwise style={{ color: "#0dcaf0", width: "1rem", height: "1rem" }} />
                               </Button>
-                              <Button variant="link" className="icon-button p-1" onClick={(e) => removeParticipant(p.id, e)} title={t("remove")} aria-label={t("remove")}>
-                                <BsFillTrashFill style={{ color: "#dc3545", width: "1rem", height: "1rem" }} />
-                              </Button>
+
+                              <Dropdown align="end" onClick={(e) => e.stopPropagation()}>
+                                <Dropdown.Toggle
+                                  variant="link"
+                                  className="icon-button participant-menu-toggle p-1"
+                                  id={`participant-menu-${p.id}`}
+                                  aria-label={t("moreOptions")}
+                                >
+                                  <BsThreeDots style={{ color: "#d3d3d3", width: "1rem", height: "1rem" }} />
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu className="participant-menu-dropdown">
+                                  <Dropdown.Item onClick={(e) => editParticipant(p.id, e)}>
+                                    <BsFillPencilFill />
+                                    <span>{t("editParticipant")}</span>
+                                  </Dropdown.Item>
+                                  <Dropdown.Item onClick={(e) => removeParticipant(p.id, e)} className="participant-menu-danger">
+                                    <BsFillTrashFill />
+                                    <span>{t("remove")}</span>
+                                  </Dropdown.Item>
+                                </Dropdown.Menu>
+                              </Dropdown>
                             </div>
                           </div>
 
@@ -155,7 +212,8 @@ export default function ParticipantsSection({
                               variant={inDanger ? "outline-light" : "outline-danger"}
                               style={{ flex: 1, minWidth: 0, height: "48px", borderRadius: "12px", padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
                               onClick={(e) => { e.stopPropagation(); adjustScore && adjustScore(p.id, -1) }}
-                              aria-label={`${t("decreasePoints")}: ${p.name}`}>
+                              aria-label={`${t("decreasePoints")}: ${p.name}`}
+                            >
                               <BsDashLg style={{ width: "1.1rem", height: "1.1rem" }} />
                             </Button>
                             <div className="participant-score-middle">
@@ -168,7 +226,8 @@ export default function ParticipantsSection({
                               variant={inDanger ? "outline-light" : "outline-success"}
                               style={{ flex: 1, minWidth: 0, height: "48px", borderRadius: "12px", padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
                               onClick={(e) => { e.stopPropagation(); adjustScore && adjustScore(p.id, 1) }}
-                              aria-label={`${t("increasePoints")}: ${p.name}`}>
+                              aria-label={`${t("increasePoints")}: ${p.name}`}
+                            >
                               <BsPlusLg style={{ width: "1.1rem", height: "1.1rem" }} />
                             </Button>
                           </div>
@@ -183,7 +242,6 @@ export default function ParticipantsSection({
                               <span className="stat-value">{formatTime(p.totalUsed)}</span>
                             </span>
                           </div>
-
                         </Card.Body>
                       </Card>
                     )}
