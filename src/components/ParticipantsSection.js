@@ -5,12 +5,13 @@ import {
   BsDashLg, BsPlusLg,
   BsClockFill, BsHourglassSplit,
   BsPlayFill, BsPauseFill,
-  BsTrophyFill, BsPersonFill
+  BsTrophyFill
 } from "react-icons/bs"
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import "../styles/ParticipantsSection.css"
+import { getParticipantVisual } from "../participantVisuals"
 
 function getParticipantColProps(count) {
   if (count <= 1) {
@@ -91,6 +92,8 @@ export default function ParticipantsSection({
         <div className={`section-box ${participantsShellClass}`}>
           <Row className="g-2 justify-content-center participants-grid">
             {participants.map(p => {
+              const participantVisual = getParticipantVisual(p)
+              const ParticipantIcon = participantVisual.Icon
               const roundTime = p.roundTimes[round] ? p.roundTimes[round] : 0
               const isActive = activeParticipantId === p.id
               const inDanger = p.timeLeft <= 0
@@ -114,7 +117,15 @@ export default function ParticipantsSection({
 
                           <div className="participant-header">
                             <div className="participant-headline drag-handle" {...dragHandleProps} title={p.name} aria-label={p.name}>
-                              <BsPersonFill className="participant-head-icon" />
+                              <span
+                                className="participant-crest"
+                                style={{
+                                  background: participantVisual.background,
+                                  boxShadow: `inset 0 0 0 1px ${participantVisual.border}`,
+                                }}
+                              >
+                                <ParticipantIcon className="participant-head-icon" style={{ color: participantVisual.color }} />
+                              </span>
                               <span className="participant-name">{p.name}</span>
                             </div>
 
