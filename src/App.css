@@ -83,6 +83,8 @@ body {
   margin-bottom: 0.9rem;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1;
 }
 .section-box:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -681,6 +683,7 @@ select:focus {
    ─────────────────────────────────────────── */
 .global-card {
   padding: 0.75rem 0.85rem;
+  z-index: 30;
 }
 
 .top-navbar {
@@ -690,6 +693,7 @@ select:focus {
   align-items: center;
   background: rgba(31, 31, 31, 0.92);
   backdrop-filter: blur(12px);
+  z-index: 30;
 }
 
 .top-navbar-title-area {
@@ -771,6 +775,8 @@ select:focus {
   align-items: center;
   gap: 0.45rem;
   justify-self: end;
+  position: relative;
+  z-index: 35;
 }
 
 .top-primary-action {
@@ -803,6 +809,7 @@ select:focus {
   border-radius: 12px;
   min-width: 220px;
   padding: 0.35rem;
+  z-index: 2000;
 }
 
 .top-navbar-actions .dropdown-item {
