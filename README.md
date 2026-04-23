@@ -13,6 +13,8 @@ Debate Orchestrator is a professional and free tool designed for managing and mo
 - Customizable times for each participant.
 - Statistics export.
 - Professional moderation for various debate formats.
+- PWA support with offline access after the first load.
+- Persistent local storage for debate state via the browser.
 
 ## Prerequisites
 
@@ -44,6 +46,24 @@ npm start
 ```
 
 Access the app at [http://localhost:3000](http://localhost:3000).
+
+## PWA and Offline Mode
+
+The app can be installed as a Progressive Web App and keeps working without internet after the production version is opened once.
+
+- The application shell is cached by a service worker.
+- Debate state is persisted locally in the browser.
+- Installed users can reopen the app offline and continue from local data.
+
+To test the production PWA locally:
+
+```bash
+npm run build
+cd build
+python3 -m http.server 4173
+```
+
+Then open [http://localhost:4173](http://localhost:4173) in a browser, let it load once, and optionally install it from the browser UI.
 
 ## Available Scripts
 

@@ -1,6 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Debates",
+  "name": "Orquestador de Debates",
+  "description": "Temporizador y moderador de debates con soporte offline y persistencia local.",
+  "lang": "es",
+  "dir": "ltr",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +21,11 @@
       "sizes": "512x512"
     }
   ],
+  "id": ".",
+  "scope": ".",
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "any",
+  "theme_color": "#1A1A1A",
+  "background_color": "#1A1A1A"
 }
