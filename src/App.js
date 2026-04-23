@@ -44,6 +44,7 @@ export default function App() {
   const [showResetTimeModal, setShowResetTimeModal] = useState(false)
   const [selectedParticipantId, setSelectedParticipantId] = useState(null)
   const [showRulesModal, setShowRulesModal] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(Boolean(document.fullscreenElement))
 
 
   const t = (key) => translations[data.language][key]
@@ -89,6 +90,18 @@ export default function App() {
     }, 1000)
     return () => clearInterval(interval)
   }, [data.activeParticipantId, data.participants, data.round, dispatch])
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement))
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    }
+  }, [])
 
   function handleAddParticipant() {
     if (!participantName.trim() || data.initialTime < 1) return
@@ -202,6 +215,19 @@ export default function App() {
     })
   }
 
+  async function handleToggleFullscreen() {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+        return
+      }
+
+      await document.documentElement.requestFullscreen()
+    } catch (error) {
+      console.error('No se pudo cambiar el modo de pantalla completa:', error)
+    }
+  }
+
   function showStats() {
     let content = ""
     data.participants.forEach((p) => {
@@ -299,6 +325,8 @@ export default function App() {
             newRound={handleNewRound}
             resetStorage={handleResetConfirmation}
             showStats={showStats}
+            isFullscreen={isFullscreen}
+            toggleFullscreen={handleToggleFullscreen}
             globalTimeInput={data.globalTimeInput}
             setGlobalTimeInput={(val) => dispatch(setGlobalTimeInput(val))}
             changeAllTime={handleChangeAllTime}

@@ -1,6 +1,14 @@
 import React from "react"
 import { Button, Form, InputGroup } from "react-bootstrap"
-import { BsArrowRepeat, BsClockHistory, BsBarChartFill, BsSkipForwardFill, BsTrash3Fill } from "react-icons/bs"
+import {
+  BsArrowRepeat,
+  BsClockHistory,
+  BsBarChartFill,
+  BsSkipForwardFill,
+  BsTrash3Fill,
+  BsArrowsFullscreen,
+  BsFullscreenExit,
+} from "react-icons/bs"
 
 export default function ControlPanel({
   t,
@@ -9,6 +17,8 @@ export default function ControlPanel({
   newRound,
   resetStorage,
   showStats,
+  isFullscreen,
+  toggleFullscreen,
   globalTimeInput,
   setGlobalTimeInput,
   changeAllTime
@@ -70,6 +80,17 @@ export default function ControlPanel({
           </Button>
           <Button variant="info" className="ctrl-action-btn" onClick={showStats} title={t('showStats')}>
             <BsBarChartFill style={{ width: "1rem", height: "1rem" }} />
+          </Button>
+          <Button
+            variant={isFullscreen ? "warning" : "secondary"}
+            className="ctrl-action-btn"
+            onClick={toggleFullscreen}
+            title={isFullscreen ? t('exitFullscreen') : t('enterFullscreen')}
+            aria-label={isFullscreen ? t('exitFullscreen') : t('enterFullscreen')}
+          >
+            {isFullscreen
+              ? <BsFullscreenExit style={{ width: "1rem", height: "1rem" }} />
+              : <BsArrowsFullscreen style={{ width: "1rem", height: "1rem" }} />}
           </Button>
         </div>
       </div>
