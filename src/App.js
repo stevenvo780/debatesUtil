@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Button } from "react-bootstrap"
 import GlobalSessionCard from "./components/GlobalSessionCard"
-import ControlPanel from "./components/ControlPanel"
 import ParticipantsSection from "./components/ParticipantsSection"
 import ParticipantForm, { generateShortId } from "./components/ParticipantForm"
 import StatsModal from "./components/StatsModal"
 import EditModal from "./components/EditModal"
 import RulesModal from "./components/RulesModal"
+import RoundSettingsModal from "./components/RoundSettingsModal"
 import { translations } from './translations'
 import {
   addParticipant,
@@ -44,7 +43,8 @@ export default function App() {
   const [showResetTimeModal, setShowResetTimeModal] = useState(false)
   const [selectedParticipantId, setSelectedParticipantId] = useState(null)
   const [showRulesModal, setShowRulesModal] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useState(Boolean(document.fullscreenElement))
+  const [showRoundSettingsModal, setShowRoundSettingsModal] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(() => Boolean(document.fullscreenElement))
 
 
   const t = (key) => translations[data.language][key]
@@ -120,7 +120,9 @@ export default function App() {
   }
 
   function handleUpdateRound(value) {
-    dispatch(updateRound(parseInt(value)))
+    const parsedValue = parseInt(value, 10)
+    if (Number.isNaN(parsedValue) || parsedValue < 1) return
+    dispatch(updateRound(parsedValue))
   }
 
   function handleNewRound() {
@@ -215,6 +217,16 @@ export default function App() {
     })
   }
 
+  function handleApplyRoundSettings() {
+    handleChangeAllTime()
+    setShowRoundSettingsModal(false)
+  }
+
+  function handleCreateNewRoundFromSettings() {
+    handleNewRound()
+    setShowRoundSettingsModal(false)
+  }
+
   async function handleToggleFullscreen() {
     try {
       if (document.fullscreenElement) {
@@ -285,51 +297,29 @@ export default function App() {
     setSelectedParticipantId(null)
   }
 
-  const { activeTimeLeft, activeTimer } = useTimerLogic(data)
-  const activeParticipant = data.participants.find((p) => p.id === data.activeParticipantId)
+  const { activeTimeLeft } = useTimerLogic(data)
 
   return (
     <>
-      <Button 
-        variant="outline-secondary" 
-        size="sm" 
-        onClick={toggleLanguage}
-        className="language-toggle"
-      >
-        {data.language === 'es' ? 'EN' : 'ES'}
-      </Button>
-      <Button
-        variant="outline-info"
-        size="sm"
-        onClick={() => setShowRulesModal(true)}
-        className="rules-toggle"
-      >
-        {t('showRules')}
-      </Button>
       <div className="app-layout">
         <div className="app-main">
           <GlobalSessionCard
             t={t}
+            language={data.language}
+            round={data.round}
             globalSessionTitle={data.globalSessionTitle}
             getGlobalSessionClock={getGlobalSessionClock}
             toggleGlobalSession={handleToggleGlobalSession}
             onTitleChange={(val) => dispatch(setGlobalTitle(val))}
-            activeTimer={activeTimer}
-            activeParticipant={activeParticipant}
             activeTimeLeft={activeTimeLeft}
-          />
-          <ControlPanel
-            t={t}
-            round={data.round}
-            updateRoundValue={handleUpdateRound}
-            newRound={handleNewRound}
-            resetStorage={handleResetConfirmation}
-            showStats={showStats}
+            onNewRound={handleNewRound}
+            onOpenRoundSettings={() => setShowRoundSettingsModal(true)}
+            toggleLanguage={toggleLanguage}
+            onShowRules={() => setShowRulesModal(true)}
+            onShowStats={showStats}
+            onReset={handleResetConfirmation}
             isFullscreen={isFullscreen}
             toggleFullscreen={handleToggleFullscreen}
-            globalTimeInput={data.globalTimeInput}
-            setGlobalTimeInput={(val) => dispatch(setGlobalTimeInput(val))}
-            changeAllTime={handleChangeAllTime}
           />
           <ParticipantsSection
             t={t}
@@ -359,6 +349,17 @@ export default function App() {
         show={showStatsModal}
         onHide={() => setShowStatsModal(false)}
         statsContent={statsContent}
+      />
+      <RoundSettingsModal
+        show={showRoundSettingsModal}
+        onHide={() => setShowRoundSettingsModal(false)}
+        t={t}
+        round={data.round}
+        updateRoundValue={handleUpdateRound}
+        globalTimeInput={data.globalTimeInput}
+        setGlobalTimeInput={(val) => dispatch(setGlobalTimeInput(val))}
+        applyRoundTime={handleApplyRoundSettings}
+        createNewRound={handleCreateNewRoundFromSettings}
       />
       <EditModal
         t={t}
