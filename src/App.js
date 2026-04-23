@@ -27,6 +27,7 @@ import {
 import "./App.css"
 import { useTimerLogic } from './hooks/useTimerLogic'
 import ConfirmationModals from './components/ConfirmationModals'
+import { assignParticipantVisualSlots, getNextParticipantVisualSlot } from "./participantVisuals"
 
 export default function App() {
   const dispatch = useDispatch()
@@ -103,12 +104,24 @@ export default function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!data.participants.length) return
+
+    const normalizedParticipants = assignParticipantVisualSlots(data.participants)
+
+    if (normalizedParticipants.hasChanges) {
+      dispatch(updateParticipantsOrder(normalizedParticipants.participants))
+    }
+  }, [data.participants, dispatch])
+
   function handleAddParticipant() {
     if (!participantName.trim() || data.initialTime < 1) return
     const shortId = generateShortId()
+    const visualSlot = getNextParticipantVisualSlot(data.participants)
     dispatch(addParticipant({
       id: Date.now(),
       shortId: shortId,
+      visualSlot,
       name: participantName.trim(),
       initialTime: parseFloat(data.initialTime),
       totalUsed: 0,

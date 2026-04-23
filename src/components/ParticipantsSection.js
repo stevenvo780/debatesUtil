@@ -11,7 +11,7 @@ import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import "../styles/ParticipantsSection.css"
-import { getParticipantVisual } from "../participantVisuals"
+import { getParticipantVisualMap } from "../participantVisuals"
 
 function getParticipantColProps(count) {
   if (count <= 1) {
@@ -76,6 +76,7 @@ export default function ParticipantsSection({
 }) {
   const participantColProps = getParticipantColProps(participants.length)
   const participantsShellClass = getParticipantsShellClass(participants.length)
+  const participantVisualMap = getParticipantVisualMap(participants)
 
   const handleDragEnd = (event) => {
     const { active, over } = event
@@ -92,7 +93,7 @@ export default function ParticipantsSection({
         <div className={`section-box ${participantsShellClass}`}>
           <Row className="g-2 justify-content-center participants-grid">
             {participants.map(p => {
-              const participantVisual = getParticipantVisual(p)
+              const participantVisual = participantVisualMap.get(p.id)
               const ParticipantIcon = participantVisual.Icon
               const roundTime = p.roundTimes[round] ? p.roundTimes[round] : 0
               const isActive = activeParticipantId === p.id
