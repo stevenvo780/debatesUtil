@@ -3,6 +3,34 @@
   transition: all 0.3s ease-in-out !important;
 }
 
+.participants-grid {
+  justify-content: center;
+}
+
+.participants-shell {
+  width: 100%;
+}
+
+.participants-shell-single {
+  width: min(100%, 820px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.participants-shell-pair {
+  width: min(100%, 1180px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.participants-grid > [class*="col-"] {
+  display: flex;
+}
+
+.participants-grid .participant-card {
+  width: 100%;
+}
+
 .participant-card:active {
   transform: scale(0.98);
 }
@@ -173,14 +201,15 @@
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.35rem;
 }
 
 .time-left {
-  font-size: 2rem;
+  font-size: clamp(2.8rem, 4.8vw, 3.3rem);
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.02em;
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
   transition: color 0.3s ease;
 }
 
@@ -226,25 +255,54 @@
 /* ── Stats row ── */
 .stats-row {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  font-size: 0.78rem;
+  gap: 1rem;
+  font-size: 0.88rem;
   opacity: 0.8;
-  padding: 0.4rem 0;
+  padding: 0.5rem 0 0.2rem;
   border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.55rem;
+  padding: 0 0.1rem;
+  white-space: nowrap;
+}
+
+.stat-value {
+  display: inline-block;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-icon {
-  width: 0.72rem !important;
-  height: 0.72rem !important;
+  width: 0.82rem !important;
+  height: 0.82rem !important;
   opacity: 0.6;
   flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .participants-shell-single,
+  .participants-shell-pair {
+    width: 100%;
+  }
+
+  .time-left {
+    font-size: clamp(2.45rem, 10vw, 2.9rem);
+  }
+
+  .stats-row {
+    gap: 0.7rem;
+    font-size: 0.82rem;
+  }
+
+  .stat-item {
+    gap: 0.45rem;
+  }
 }
 
 /* ── Generic icon buttons ── */

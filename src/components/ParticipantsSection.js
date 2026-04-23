@@ -11,10 +11,39 @@ import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import DragBar from "./DragBar"
+import "../styles/ParticipantsSection.css"
+
+function getParticipantColProps(count) {
+  if (count <= 1) {
+    return { xs: 12 }
+  }
+
+  if (count === 2) {
+    return { xs: 12, md: 6 }
+  }
+
+  if (count === 3) {
+    return { xs: 12, md: 6, xl: 4 }
+  }
+
+  return { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }
+}
+
+function getParticipantsShellClass(count) {
+  if (count <= 1) {
+    return "participants-shell participants-shell-single"
+  }
+
+  if (count === 2) {
+    return "participants-shell participants-shell-pair"
+  }
+
+  return "participants-shell"
+}
 
 function SortableItem({ id, onClick, children }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
-  const style = { transform: CSS.Transform.toString(transform), transition }
+  const style = { transform: CSS.Transform.toString(transform), transition, width: "100%" }
   const handleClick = (e) => {
     if (e.target.closest("button, a")) return
     if (!isDragging) onClick && onClick(e)
@@ -42,6 +71,9 @@ export default function ParticipantsSection({
   formatTime,
   onReorder,
 }) {
+  const participantColProps = getParticipantColProps(participants.length)
+  const participantsShellClass = getParticipantsShellClass(participants.length)
+
   const handleDragEnd = (event) => {
     const { active, over } = event
     if (!active || !over) return
@@ -54,8 +86,8 @@ export default function ParticipantsSection({
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={participants.map(p => p.id)} strategy={rectSortingStrategy}>
-        <div className="section-box">
-          <Row className="g-3">
+        <div className={`section-box ${participantsShellClass}`}>
+          <Row className="g-3 justify-content-center participants-grid">
             {participants.map(p => {
               const roundTime = p.roundTimes[round] ? p.roundTimes[round] : 0
               const isActive = activeParticipantId === p.id
@@ -68,7 +100,7 @@ export default function ParticipantsSection({
                 animationStyle = { animation: `dyingGradient 30s linear -${offset}s forwards` }
               }
               return (
-                <Col key={p.id} xs={12} sm={6} md={3} lg={3}>
+                <Col key={p.id} {...participantColProps}>
                   <SortableItem id={p.id} onClick={() => toggleTimer(p.id)}>
                     <Card
                       className={`mb-3 h-100 participant-card${isActive ? " card-active" : ""}`}
@@ -124,11 +156,11 @@ export default function ParticipantsSection({
                         <div className="stats-row">
                           <span className={`stat-item ${textColorClass}`}>
                             <BsClockFill className="stat-icon" />
-                            {formatTime(roundTime)}
+                            <span className="stat-value">{formatTime(roundTime)}</span>
                           </span>
                           <span className={`stat-item ${textColorClass}`}>
                             <BsHourglassSplit className="stat-icon" />
-                            {formatTime(p.totalUsed)}
+                            <span className="stat-value">{formatTime(p.totalUsed)}</span>
                           </span>
                         </div>
 
